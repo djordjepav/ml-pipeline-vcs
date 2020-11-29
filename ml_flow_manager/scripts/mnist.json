@@ -1,0 +1,109 @@
+{
+    "flow_name": "mnist_flow",
+    "flow_version": "0.0.1",
+    "nodes": [
+        {
+            "available_params": [
+                "dataset"
+            ],
+            "input_keys": [],
+            "output_keys": [
+                "x_train",
+                "y_train",
+                "x_test",
+                "y_test"
+            ],
+            "params": {
+                "dataset": "mnist"
+            },
+            "type": "keras_dataset_loader"
+        },
+        {
+            "available_params": [],
+            "input_keys": [
+                "x_train",
+                "x_test"
+            ],
+            "output_keys": [
+                "x_train",
+                "x_test"
+            ],
+            "params": {},
+            "type": "data_normalizer"
+        },
+        {
+            "available_params": [
+                "model_path",
+                "loss",
+                "metrics",
+                "optimizer",
+                "compile",
+                "train",
+                "validate",
+                "epochs",
+                "batch_size"
+            ],
+            "input_keys": [
+                "x_train",
+                "y_train"
+            ],
+            "output_keys": [
+                "model"
+            ],
+            "params": {
+                "batch_size": 128,
+                "compile": false,
+                "epochs": 10,
+                "model_path": "../../mnist.h5",
+                "optimizer": null,
+                "train": true,
+                "validate": false
+            },
+            "type": "model_loader"
+        },
+        {
+            "available_params": [],
+            "input_keys": [
+                "model",
+                "x_test",
+                "y_test"
+            ],
+            "output_keys": [
+                "eval"
+            ],
+            "params": {
+                "index": 10
+            },
+            "type": "model_evaluator"
+        },
+        {
+            "available_params": [
+                "index"
+            ],
+            "input_keys": [
+                "model",
+                "x_test"
+            ],
+            "output_keys": [
+                "pred"
+            ],
+            "params": {
+                "index": 10
+            },
+            "type": "model_predictor"
+        },
+        {
+            "available_params": [
+                "index"
+            ],
+            "input_keys": [
+                "x_test"
+            ],
+            "output_keys": [],
+            "params": {
+                "index": 10
+            },
+            "type": "data_plotter"
+        }
+    ]
+}

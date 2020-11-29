@@ -11,7 +11,7 @@ Install
 
 If you don't have python3 or your version is <3.6.0, install/upgrade it.
 
-### 1. Create and activate virtual python environment:
+### 1. Create and activate python virtual environment:
 
 Create and activate python environment with following commands.
 

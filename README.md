@@ -2,7 +2,7 @@
 Framework for pipelining Machine Learning projects with built-in Version Control System.
 
 Consists of following packages:
-* `ml_flow_manager` - package (framework) which creates the flow of the processing nodes (ML operators)
+* `ml-flow-manager` - package (framework) which creates the flow of the processing nodes (ML operators)
 * `ml_flow_vcs` - package that deals with persistency of the data in `DataHandler` and versions of created flows
 * `ml_flow_vcs_api` - endpoints for working with
 
@@ -34,7 +34,7 @@ $ pipe_env/Scripts/activate
 Run the command below from the project's root directory.
 
 ```shell script
-(env) $ pip install -e .
+(env) $ pip install -e ml_flow_manager
 ```
 - e - development mode
 - . - location of setup.py file

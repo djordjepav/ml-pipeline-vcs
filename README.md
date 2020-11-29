@@ -34,7 +34,7 @@ $ pipe_env/Scripts/activate
 Run the command below from the project's root directory.
 
 ```shell script
-(pipe_env) $ pip install -e .
+(env) $ pip install -e .
 ```
 - e - development mode
 - . - location of setup.py file

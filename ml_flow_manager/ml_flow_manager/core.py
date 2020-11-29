@@ -56,7 +56,7 @@ class ProcessingNode():
         self.__finalize()
 
 
-class FlowManager(self.ProcessingUnit):
+class FlowManager(self.ProcessingNode):
     def __init__(self, factory=None):
         self.__data_holder = DataHolder()
         self.__processing_units = []

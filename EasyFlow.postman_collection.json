@@ -1,0 +1,797 @@
+{
+	"info": {
+		"_postman_id": "292dd02e-9ecd-4ce6-9770-c11bdde0efb0",
+		"name": "EasyFlow",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\" : \"djordjepav\",\n\t\"password\" : \"djordjepav\"\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/login/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token 4354e5a023abb40258321a90cf86ef2e4f7f92d2",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"created_by\" : 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/logout/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"logout",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCookie",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/get_cookie/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"get_cookie",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/user/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"user",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Team",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/team/2",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"team",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CompServer",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/comp_server/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"comp_server",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Flow",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/flow/4",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"flow",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FlowVersion",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/flow_version/4",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"flow_version",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/request/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"request",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UserCreate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"djordjepav\",\n\t\"email\" : \"djordjepav@easy_flow.com\",\n\t\"password\" : \"djordjepav\",\n\t\"first_name\" : \"Djordje\",\n\t\"last_name\" : \"Pavlovic\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/user_create/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"user_create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TeamCreate",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"created_by\": 1,\n    \"name\": \"my_team2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/team_create/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"team_create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CompServerAdd",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"created_by\": 1,\n    \"flow\": 4,\n\t\"remote_user\" : null,\n\t\"remote_host\" : \"local\",\n    \"env_path\": \"~/Data/Fax/Semestar 7/Arhitektura i Projektovanje Softvera/Project/env\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/comp_server_add/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"comp_server_add",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FlowCreate",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"created_by\": 1,\n\t\"team\" : 2,\n    \"serialized_flow\": {\n        \"flow_name\": \"mnist_flow\",\n        \"flow_version\": \"0.0.1\",\n        \"nodes\": [\n            {\n                \"available_params\": [\n                    \"dataset\"\n                ],\n                \"input_keys\": [],\n                \"output_keys\": [\n                    \"x_train\",\n                    \"x_test\",\n                    \"y_train\",\n                    \"y_test\"\n                ],\n                \"params\": {\n                    \"dataset\": \"mnist\"\n                },\n                \"type\": \"keras_dataset_loader\"\n            },\n            {\n                \"available_params\": [],\n                \"input_keys\": [\n                    \"x_train\",\n                    \"x_test\"\n                ],\n                \"output_keys\": [\n                    \"x_train\",\n                    \"x_test\"\n                ],\n                \"params\": {},\n                \"type\": \"data_normalizer\"\n            },\n            {\n                \"available_params\": [\n                    \"model_path\",\n                    \"loss\",\n                    \"metrics\",\n                    \"optimizer\",\n                    \"compile\"\n                ],\n                \"input_keys\": [],\n                \"output_keys\": [\n                    \"model\"\n                ],\n                \"params\": {\n                    \"compile\": false,\n                    \"model_path\": \"mnist.h5\",\n                    \"optimizer\": null\n                },\n                \"type\": \"model_loader\"\n            },\n            {\n                \"available_params\": [\n                    \"model_path\",\n                    \"loss\",\n                    \"metrics\",\n                    \"optimizer\"\n                ],\n                \"input_keys\": [\n                    \"model\",\n                    \"x_train\",\n                    \"y_train\"\n                ],\n                \"output_keys\": [\n                    \"eval\"\n                ],\n                \"params\": {\n                    \"optimizer\": null\n                },\n                \"type\": \"model_evaluator\"\n            }\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/flow_create/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"flow_create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FlowVersionCreate",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"created_by\": 1,\n\t\"flow\" : 4,\n    \"prev_flow_version\": 7,\n    \"serialized_flow\": {\n        \"flow_name\": \"mnist_flow\",\n        \"flow_version\": \"0.1.1\",\n        \"nodes\": [\n            {\n                \"available_params\": [\n                    \"dataset\"\n                ],\n                \"input_keys\": [],\n                \"output_keys\": [\n                    \"x_train\",\n                    \"x_test\",\n                    \"y_train\",\n                    \"y_test\"\n                ],\n                \"params\": {\n                    \"dataset\": \"mnist\"\n                },\n                \"type\": \"keras_dataset_loader\"\n            },\n            {\n                \"available_params\": [],\n                \"input_keys\": [\n                    \"x_train\",\n                    \"x_test\"\n                ],\n                \"output_keys\": [\n                    \"x_train\",\n                    \"x_test\"\n                ],\n                \"params\": {},\n                \"type\": \"data_normalizer\"\n            },\n            {\n                \"available_params\": [\n                    \"model_path\",\n                    \"loss\",\n                    \"metrics\",\n                    \"optimizer\",\n                    \"compile\"\n                ],\n                \"input_keys\": [],\n                \"output_keys\": [\n                    \"model\"\n                ],\n                \"params\": {\n                    \"compile\": false,\n                    \"model_path\": \"mnist.h5\",\n                    \"optimizer\": null\n                },\n                \"type\": \"model_loader\"\n            },\n            {\n                \"available_params\": [\n                    \"model_path\",\n                    \"loss\",\n                    \"metrics\",\n                    \"optimizer\"\n                ],\n                \"input_keys\": [\n                    \"model\",\n                    \"x_train\",\n                    \"y_train\"\n                ],\n                \"output_keys\": [\n                    \"eval\"\n                ],\n                \"params\": {\n                    \"optimizer\": null\n                },\n                \"type\": \"model_evaluator\"\n            }\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/flow_version_create/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"flow_version_create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RequestCreate",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"created_by\": 1,\n    \"flow_version\": 5,\n    \"comp_server\": 1,\n    \"from_date\": \"2021-01-18 00:30\",\n    \"to_date\": \"2021-01-25 14:30\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/request_create/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"request_create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddMember",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"created_by\": 1,\n    \"user\": 2,\n    \"team\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/add_member/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"add_member",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FlowVersionEdit",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"created_by\": 1,\n    \"flow_version\": 7,\n    \"serialized_flow\": {\n        \"flow_name\": \"mnist_flow\",\n        \"flow_version\": \"0.1.1\",\n        \"nodes\": [\n            {\n                \"available_params\": [\n                    \"dataset\"\n                ],\n                \"input_keys\": [],\n                \"output_keys\": [\n                    \"x_train\",\n                    \"x_test\",\n                    \"y_train\",\n                    \"y_test\"\n                ],\n                \"params\": {\n                    \"dataset\": \"mnist\"\n                },\n                \"type\": \"keras_dataset_loader\"\n            },\n            {\n                \"available_params\": [],\n                \"input_keys\": [\n                    \"x_train\",\n                    \"x_test\"\n                ],\n                \"output_keys\": [\n                    \"x_train\",\n                    \"x_test\"\n                ],\n                \"params\": {},\n                \"type\": \"data_normalizer\"\n            },\n            {\n                \"available_params\": [\n                    \"model_path\",\n                    \"loss\",\n                    \"metrics\",\n                    \"optimizer\",\n                    \"compile\"\n                ],\n                \"input_keys\": [],\n                \"output_keys\": [\n                    \"model\"\n                ],\n                \"params\": {\n                    \"compile\": false,\n                    \"model_path\": \"mnist.h5\",\n                    \"optimizer\": null\n                },\n                \"type\": \"model_loader\"\n            },\n            {\n                \"available_params\": [\n                    \"model_path\",\n                    \"loss\",\n                    \"metrics\",\n                    \"optimizer\"\n                ],\n                \"input_keys\": [\n                    \"model\",\n                    \"x_train\",\n                    \"y_train\"\n                ],\n                \"output_keys\": [\n                    \"eval\"\n                ],\n                \"params\": {\n                    \"optimizer\": null\n                },\n                \"type\": \"model_evaluator\"\n            }\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/flow_version_edit/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"flow_version_edit",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RequestApprove",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"created_by\": 1,\n    \"request\": 2,\n    \"approve\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/request_approve/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"request_approve",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CompServerRemove",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"comp_server\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/comp_server_remove/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"comp_server_remove",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FlowRemove",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token 0c0aad2156409809b03521a428ab4e10644d2e74"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"flow\": 4\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/easy_flow/v1/flow_remove/",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"easy_flow",
+						"v1",
+						"flow_remove",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,11 @@
+django
+djangorestframework
+pygments
+pillow
+pylint
+django-filter
+drf-extensions
+django-rest-swagger
+django-cors-headers
+djoser
+mysqlclient

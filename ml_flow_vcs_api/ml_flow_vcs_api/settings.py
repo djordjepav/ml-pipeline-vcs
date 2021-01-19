@@ -16,7 +16,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '192.168.0.17',
     '192.168.0.19',
-    '192.168.43.188'
+    '192.168.43.188',
+    'localhost:3000'
     ]
 
 # Application definition
@@ -56,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     ]
 
 CORS_ORIGIN_ALLOW_ALL = True

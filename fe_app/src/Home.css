@@ -22,7 +22,26 @@ a{
     color: lightslategray;
 }
 
-.signForm
+
+a.linkToAbout:hover{
+    text-decoration: none;
+    color: lightskyblue;
+}
+
+  /* mouse over link */
+a:hover {
+    color: #282c34;
+}
+  
+  /* selected link */
+a:active {
+    color: #282c34;
+}
+  
+
+
+
+.signDiv
 {
     background-color:lightskyblue;
     height: 100px;
@@ -38,7 +57,20 @@ a{
     font-family: fantasy;
     color: rgb(54,65,71);
     text-align: right;
-  }
+    animation-name: fadeIn;
+    animation-duration: 1s;
+
+}
+
+
+@keyframes fadeIn{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
 
 .inputSignup{
     border: 1px solid rgb(123, 48, 48);

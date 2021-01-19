@@ -31,7 +31,7 @@ export default function Home()
             i tako dalje
           </p>
         </div>
-        <div className="signForm">
+        <div className="signDiv">
           <Link onClick={handlerRegister}> Register </Link>
           /
           <Link onClick={handlerLogIn}> LogIn </Link>
@@ -41,8 +41,6 @@ export default function Home()
             :<SingUp></SingUp>
           }
           <br/>
-          
-          
         </div>
       </div>
     );

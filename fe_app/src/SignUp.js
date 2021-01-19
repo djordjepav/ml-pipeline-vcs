@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect,useState } from 'react'
 
 export default function SingUp() {
 
@@ -24,24 +24,20 @@ export default function SingUp() {
         setPassword(e.target.value);
     }
 
-    async function createUser() {
-       console.log(JSON.stringify({"username":username,"email":email,"password":password,"first_name":firstname,"last_name":lastname}));
- /*
+    const createUser = async(e) =>{
+        e.preventDefault();
         const requestOptions = {
             method: 'POST',
-            headers: [],
+            headers: {'Content-Type': 'application/json' },
             body: JSON.stringify({"username":username,"email":email,"password":password,"first_name":firstname,"last_name":lastname})};
-        }
-        const response = await fetch('127.0.0.1:8000/easy_flow/v1/user_create/',requestOptions);
-
-        console.log(response);*/
+            
+        const response = await fetch('http://localhost:8000/easy_flow/v1/user_create/',requestOptions);
+        console.log(response);
     }
-
-
 
     return (
         <div className="divSignup">
-           
+            <form onSubmit={createUser}>
                 Username: <input className="inputSignup" type="text" value={username} onChange={updateUsername} />
                 <br /><br />
                 E-mail: <input className="inputSignup" type="text" value={email} onChange={updateEmail} />
@@ -52,8 +48,8 @@ export default function SingUp() {
                 <br /><br />
                 Password: <input className="inputSignup" type="text" value={password} onChange={updatePassword} />
                 <br /><br />
-                <button id="buttonSingup" onClick={createUser}>SignUp</button>
-           
+                <button type="submit" id="buttonSingup">SignUp</button>
+            </form>
         </div>
     )
 }

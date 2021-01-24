@@ -32,6 +32,7 @@ setup(
         python_requires=REQUIRES_PYTHON,
         packages=find_packages(),
         package_dir={'': '.'},
+        install_requires=REQUIRED,
         entry_points={
             'console_scripts': [
                 'run-flow = scripts.run_flow:run'

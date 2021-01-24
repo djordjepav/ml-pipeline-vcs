@@ -36,6 +36,8 @@ urlpatterns = [
          name='flow_version_create'),
     path('easy_flow/v1/flow_version_edit/', api_views.FlowVersionUpdate.as_view(),
          name='flow_version_edit'),
+    path('easy_flow/v1/flow_version_execute/', api_views.FlowVersionExecute.as_view(),
+         name='flow_version_execute'),
     path('easy_flow/v1/team_create/', api_views.TeamCreate.as_view(),
          name='team_create'),
     path('easy_flow/v1/add_member/', api_views.TeamUpdate.as_view(),

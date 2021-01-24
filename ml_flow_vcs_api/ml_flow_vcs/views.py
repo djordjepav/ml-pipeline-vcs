@@ -80,7 +80,8 @@ class UserCreate(generics.ListCreateAPIView):
 
     def create(self, request):
         data = request.data
-        user = models.User(email=data['email'], username=data['username'])
+        user = models.User(email=data['email'], username=data['username'], first_name=data['first_name'],
+                           last_name=data['last_name'])
         user.set_password(data['password'])
         user.save()
 
@@ -275,7 +276,7 @@ class FlowVersionCreate(generics.ListCreateAPIView):
         created_by = models.User.objects.get(id=data['created_by'])
         prev_flow_version = models.FlowVersion.objects.get(id=data['prev_flow_version'])
 
-        if created_by in prev_flow_version.flow.team.members.all() or\
+        if created_by in prev_flow_version.flow.team.members.all() or \
                 created_by == prev_flow_version.flow.team.leader:
             filename = '{0}_{1}.json'.format(json_flow['flow_name'], json_flow['flow_version'])
             filename = os.path.join(fs_mount_point, filename)
@@ -320,6 +321,39 @@ class FlowVersionUpdate(generics.UpdateAPIView):
 
             serializer = serializers.FlowVersionSerializer(flow_version)
             return Response(serializer.data)
+
+        return Response({'detail': 'failed'})
+
+
+# PUT flow_version_execute/
+class FlowVersionExecute(generics.UpdateAPIView):
+    def update(self, request):
+        data = request.data
+
+        created_by = models.User.objects.get(id=data['created_by'])
+        flow_version = models.FlowVersion.objects.get(id=data['flow_version'])
+        comp_server = models.ComputationalServer.objects.get(id=data['comp_server'])
+        req = None
+
+        if data['request']:
+            req = models.Request.objects.get(id=data['request'])
+
+        if created_by == flow_version.created_by or \
+                (req.created_by == created_by and req.approved and req.from_date <= now() <= req.to_date):
+
+            env_path = os.path.join(comp_server.env_path, 'bin', 'python')
+            run_path = os.path.join(os.path.dirname(__file__), '..', '..', 'ml_flow_manager', 'scripts', 'run_flow.py')
+            flow_path = os.path.abspath(flow_version.path)
+
+            env_path = env_path.replace(' ', '\\ ')
+            run_path = run_path.replace(' ', '\\ ')
+            flow_path = flow_path.replace(' ', '\\ ')
+
+            cmd = '{0} {1} {2}'.format(env_path, run_path, flow_path)
+            print("RUNNING: ", cmd)
+            os.system(cmd)
+
+            return Response({'detail': 'success'})
 
         return Response({'detail': 'failed'})
 

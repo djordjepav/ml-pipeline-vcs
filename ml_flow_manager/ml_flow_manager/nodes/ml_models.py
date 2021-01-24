@@ -1,7 +1,22 @@
+import json
+import os
+
+import numpy as np
+import redis
+from keras.callbacks import Callback
 from keras.models import load_model
 from keras.utils import to_categorical
 from ml_flow_manager.core import ProcessingNode
-import numpy as np
+
+
+class PublishCallback(Callback):
+    def __init__(self, team, host='localhost', port=6379):
+        super(PublishCallback, self).__init__()
+        self._redis_publisher = redis.StrictRedis(host=host, port=port)
+        self._team = team
+
+    def on_epoch_end(self, epoch, logs=None):
+        self._redis_publisher.publish(self._team, json.dumps(logs))
 
 
 class Model(ProcessingNode):
@@ -13,14 +28,21 @@ class ModelLoader(Model):
     def __init__(self):
         super(ModelLoader, self).__init__()
         self._available_params = ['model_path', 'loss', 'metrics', 'optimizer', 'compile', 'train',
-                                  'validate', 'epochs', 'batch_size']
+                                  'epochs', 'batch_size', 'publish']
         self._params['optimizer'] = None
         self._params['compile'] = False
         self._params['train'] = False
-        self._params['validate'] = False
+        self._params['publish'] = False
 
     def run(self):
-        model_path = self._params['model_path']
+        model_path = os.path.abspath(self._params['model_path'])
+
+        callback_list = []
+
+        publish = self._params['publish']
+        if publish:
+            pub_callback = PublishCallback(publish)
+            callback_list.append(pub_callback)
 
         model = load_model(model_path)
         if self._params['compile']:
@@ -37,13 +59,8 @@ class ModelLoader(Model):
             epochs = self._params['epochs']
             batch_size = self._params['batch_size']
 
-            if self._params['validate']:
-                x_test = self._inputs[2]
-                y_test = self._inputs[3]
-
-                model.fit(x=x_train, y=to_categorical(y_train), epochs=epochs, batch_size=batch_size)
-            else:
-                model.fit(x=x_train, y=to_categorical(y_train), epochs=epochs, batch_size=batch_size)
+            model.fit(x=x_train, y=to_categorical(y_train), epochs=epochs, batch_size=batch_size,
+                      callbacks=callback_list)
         print(model.summary())
 
         self._outputs = [model]

@@ -108,7 +108,7 @@ class FlowManager(ProcessingNode):
             json_flow['nodes'].append(json_node)
 
         with open(filename, 'w') as f:
-            json.dump(json_flow, f, indent=4, sort_keys=True)
+            json.dump(json_flow, f, indent=4)
 
     def deserialize(self, filename):
         with open(filename, 'r') as f:

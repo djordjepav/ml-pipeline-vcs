@@ -5,7 +5,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     /*justify-content: center;*/
     font-size: calc(10px + 2vmin);
     color: white;
@@ -39,8 +39,6 @@ a:active {
 }
   
 
-
-
 .signDiv
 {
     background-color:lightskyblue;
@@ -54,11 +52,11 @@ a:active {
     height: 300px;
     margin:25px auto 0px auto;
     font-size: 17px;
-    font-family: fantasy;
+    /* font-family: fantasy; */
     color: rgb(54,65,71);
     text-align: right;
     animation-name: fadeIn;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
 
 }
 

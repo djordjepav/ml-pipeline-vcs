@@ -380,11 +380,11 @@ class TeamCreate(generics.ListCreateAPIView):
         created_by = models.User.objects.get(id=data['created_by'])
 
         team = models.Team(name=data['name'], leader=created_by)
+        team.save()
         team.members.add(created_by)
         team.save()
 
         created_by.created_teams.add(team)
-        created_by.teams.add(team)
         created_by.save()
 
         serializer = serializers.TeamSerializer(team)
@@ -413,11 +413,14 @@ class TeamUpdate(generics.UpdateAPIView):
 
         team = models.Team.objects.get(id=data['team'])
         leader = models.User.objects.get(id=data['created_by'])
-        member = models.User.objects.get(id=data['user'])
+        member = models.User.objects.get(email=data['user'])
+
 
         if team.leader == leader:
             team.members.add(member)
             team.save()
+            member.teams.add(team)
+            member.save()
 
             return Response({'detail': 'success'})
 

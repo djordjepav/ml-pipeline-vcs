@@ -24,7 +24,7 @@ class ComputationalServer(models.Model):
     env_path = models.CharField(max_length=256)
 
 
-# TODO: Edit, Execute
+# DONE
 class FlowVersion(models.Model):
     version = models.CharField(max_length=32)
     timestamp = models.DateTimeField(default=now)

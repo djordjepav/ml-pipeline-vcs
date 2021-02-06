@@ -373,6 +373,25 @@ class FlowVersionViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+# GET flow_version_json/{id} +
+class FlowVersionJsonViewSet(viewsets.ModelViewSet):
+    queryset = models.FlowVersion.objects.all()
+
+    def list(self, request):
+        pass
+
+    def retrieve(self, request, pk):
+        queryset = models.FlowVersion.objects.all()
+        queryset = get_object_or_404(queryset, pk=pk)
+
+        filename = queryset.path
+
+        with open(filename, 'r') as f:
+            response = json.load(f)
+
+        return Response(response)
+
+
 # POST team_create/ +
 class TeamCreate(generics.ListCreateAPIView):
     def create(self, request):

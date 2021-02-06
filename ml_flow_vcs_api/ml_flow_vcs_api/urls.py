@@ -12,6 +12,7 @@ router.register(r'flow', api_views.FlowViewSet)
 router.register(r'flow_version', api_views.FlowVersionViewSet)
 router.register(r'team', api_views.TeamViewSet)
 router.register(r'request', api_views.RequestViewSet)
+router.register(r'flow_version_json', api_views.FlowVersionJsonViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

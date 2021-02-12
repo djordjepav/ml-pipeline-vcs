@@ -10,13 +10,13 @@ from ml_flow_manager.core import ProcessingNode
 
 
 class PublishCallback(Callback):
-    def __init__(self, team, host='localhost', port=6379):
+    def __init__(self, channel, host='localhost', port=6379):
         super(PublishCallback, self).__init__()
         self._redis_publisher = redis.StrictRedis(host=host, port=port)
-        self._team = team
+        self._channel = channel
 
     def on_epoch_end(self, epoch, logs=None):
-        self._redis_publisher.publish(self._team, json.dumps(logs))
+        self._redis_publisher.publish(self._channel, json.dumps(logs))
 
 
 class Model(ProcessingNode):

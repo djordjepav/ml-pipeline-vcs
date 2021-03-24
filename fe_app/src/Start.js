@@ -30,7 +30,7 @@ export default function Start({children}){
             };
         const response = await fetch("http://localhost:8000/easy_flow/v1/user/" + cookies.id +"/", requestOptions);
         const data = await response.json();
-        console.log(data);
+
         setUser(data);
         setTeams(data.teams);
         setMyTeams(data.created_teams);
@@ -62,9 +62,6 @@ export default function Start({children}){
                                 </Link>
                             </li>
                         ))}
-                        
-                        
-                        
                     </ul>
                 </nav>
             </aside>

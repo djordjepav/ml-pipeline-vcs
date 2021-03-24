@@ -9,6 +9,7 @@ import TeamCreate from './TeamCreate';
 import Team from './Team';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import MainLayout from "./Layout.jsx";
+import Flow from './Flow';
 
 export default function App() {
 
@@ -18,8 +19,10 @@ export default function App() {
         <Switch>
           <Route path='/' exact={true} component={Home} />
           <Route path="/about" component={About}/>
+          
           <Main>
-              <Start>
+              <Route path="/main">
+                <Start>
                 { user =>(
                 <React.Fragment> 
                   <Route exact={true} path="/main">
@@ -33,10 +36,10 @@ export default function App() {
                   </Route>
                 </React.Fragment>
                 )}
-              </Start>
+                </Start>
+              </Route>
+              <Route path="/flow/:flowname/:rootid" component={Flow}/>      
           </Main>
-               {/*<Route path="/main/flowManager" component={FlowManager}/>
-               <Route paht="/main/flowVersion" component={FlowVersion}/> */}
         </Switch>
       </Router>
     </div>

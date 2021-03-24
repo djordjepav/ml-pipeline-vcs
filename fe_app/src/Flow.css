@@ -1,0 +1,67 @@
+#flow.content{
+    background-color:  #282c34;
+    color: white;
+    display: flex;
+    flex-direction: row;
+
+    
+}
+
+hr{
+    width: 100%;
+    background-color: black;
+}
+
+.node{
+    display: flex;
+    flex-direction: column;
+    font-size: medium;
+    text-align: center;
+
+    margin-left: 100px;
+    background-color: lightskyblue;
+    color: black;
+    min-height: 80px;
+    min-width: 150px;
+}
+
+.NodeTable{
+    text-align: center;
+    width: 100%;
+}
+
+.node span{
+    font-size: medium;
+    cursor: pointer;
+}
+
+p{
+    font-size: medium;
+}
+
+.link{
+    cursor: pointer;
+}
+
+.flowCreate{
+    font-size: medium;
+    text-align: left;
+    margin-left: 100px;
+    display: flex;
+}
+
+#naslov{
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.flowReview{
+    margin-left: 100px;
+}
+
+#bilosta{
+    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}

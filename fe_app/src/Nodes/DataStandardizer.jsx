@@ -1,5 +1,5 @@
 import React, { useEffect,useState } from 'react';
-import "../Flow.css";
+import "../Flow/Flow.css";
 
 export default function DataStandardizer(props){
 
@@ -10,67 +10,36 @@ export default function DataStandardizer(props){
     const [output,setOutput] = useState([]);
 
 
-    const [index,setIndex] = useState(
-        {
-            "available_params": [],
-                "input_keys": [
-                    "x_train",
-                    "x_test"
-                ],
-                "output_keys": [
-                    "x_train",
-                    "x_test"
-                ],
-                "params": {},
-                "type": "data_standardizer"
+    useEffect(() => {
+        if (props.creationFlag == true) {
+            setUpdate(true);
+
+            //mesto za dodavanje parametara, ovde ih nema
         }
-    );
+
+    }, []);
     
-    const fja = () =>
-    {
-        // let items = [...props.nodes];
-        // let item = {...items[props.id]};
-
-        // item.params.dataset = "newmnist";
-        // items[props.id] = item;
-
-        // props.setNodes({items});
-
-    }
 
     useEffect(() =>{
-        setInput(props.nodes[props.id].input_keys);
-        setOutput(props?.nodes[props.id]?.output_keys);
-    },[props.nodes]);
-
-    useEffect(() => {
-        if(props.creationFlag)
-        {
-            let items = props.nodes;
-            let item =  index;
-            
-            items[props.id] = item;
-
-            props.setNodes(items);
+        if (props.creationFlag == false) {
+            setInput(props.nodes[props.id].input_keys);
+            setOutput(props.nodes[props.id]?.output_keys);
         }
-
-        //console.log(props.nodes[props.id]);
-    },[] );
+    },[props.nodes]);
 
 
     const onChange = () =>
     {
         setUpdate(!update);
-        if(update)
-        {
-            //console.log("upisujem");
-            var nodes = props.nodes;
+        if(update){
+
+            let nodes = props.nodes;
             
             nodes[props.id].input_keys = input;
             nodes[props.id].output_keys = output;
 
-            props.setNodes(1);
-            //props.update()
+            props.setNodes(nodes);
+            props.setUpdateFlag(1);
         }
     }
 
@@ -125,110 +94,141 @@ export default function DataStandardizer(props){
                     {update?
                     <>
                         <table className="NodeTable">
-                            <tr>
-                                <th> 
-                                    Input keys:
-                                    <button onClick={() => addInput()}>+</button>
-                                </th>
-                                
-                            </tr>
-                            {input.length == 0 ? 
-                                <tr>
-                                    <td>
-                                        null
-                                    </td>
-                                </tr>
-                            :
-                            <>
-                            {input.map((item, index) => (
-                                <tr>
-                                    <td>
-                                        <input className="inputNode" type="text" value={item} onChange={(e) => changeInput(index,e)}/>
-                                        <button onClick={() => removeInput(index)}>-</button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </>}
-                        </table>
-                        <table className="NodeTable">
-                            <tr>
-                                <th>  
-                                    Output keys: 
-                                    <button onClick={() => addOutput()}>+</button>
-                                </th>
-                            </tr>
-                            {output.length == 0 ? 
-                                <tr>
-                                    <td>
-                                        null
-                                    </td>
-                                </tr>
-                            :
-                            <>
-                            {output.map((item, index) => (
-                                <tr>
-                                    <td>
-                                        <input className="inputNode" type="text" value={item} onChange={(e) => changeOutput(index,e)}/>
-                                        <button onClick={() => removeOutput(index)}>-</button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </>}
-                        </table>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Input keys:
+                                        <button onClick={() => addInput()}>+</button>
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                {input.length == 0 ?
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                null
+                                        </td>
+                                        </tr>
+                                    </tbody>
+                                    :
+                                    <>
+                                        {input.map((item, index) => (
+                                            <tbody key={index}>
+                                                <tr>
+                                                    <td>
+                                                        <input className="inputNode" type="text" value={item} onChange={(e) => changeInput(index, e)} />
+                                                        <button onClick={() => removeInput(index)}>-</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        ))}
+                                    </>}
+                            </table>
+                            <table className="NodeTable">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Output keys:
+                                        <button onClick={() => addOutput()}>+</button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                {output.length == 0 ?
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                null
+                                        </td>
+                                        </tr>
+                                    </tbody>
+                                    :
+                                    <>
+                                        {output.map((item, index) => (
+                                            <tbody key={index}>
+                                                <tr>
+                                                    <td>
+                                                        <input className="inputNode" type="text" value={item} onChange={(e) => changeOutput(index, e)} />
+                                                        <button onClick={() => removeOutput(index)}>-</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        ))}
+                                    </>}
+                            </table>
                     </>
                     :
                     <>
                         <table className="NodeTable">
-                            <tr>
-                                <th> 
-                                    Input keys:
-                                </th>
-                                
-                            </tr>
-                            {input.length == 0 ? 
-                                <tr>
-                                    <td>
-                                        null
-                                    </td>
-                                </tr>
-                            :
-                            <>
-                            {input.map((item, index) => (
-                                <tr>
-                                    <td>
-                                        {item}
-                                    </td>
-                                </tr>
-                            ))}
-                            </>}
-                        </table>
-                        <table className="NodeTable">
-                            <tr>
-                                <th>  
-                                    Output keys: 
-                                </th>
-                            </tr>
-                            {output.length == 0 ? 
-                                <tr>
-                                    <td>
-                                        null
-                                    </td>
-                                </tr>
-                            :
-                            <>
-                            {output.map((item, index) => (
-                                <tr>
-                                    <td>
-                                        {item}
-                                    </td>
-                                </tr>
-                            ))}
-                            </>}
-                        </table>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Input keys:
+                                    </th>
+
+                                    </tr>
+                                </thead>
+                                {input.length == 0 ?
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                null
+                                   </td>
+                                        </tr>
+                                    </tbody>
+                                    :
+                                    <>
+                                        {input.map((item, index) => (
+                                            <tbody key={index}>
+                                                <tr>
+                                                    <td>
+                                                        {item}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        ))}
+                                    </>}
+                            </table>
+                            <table className="NodeTable">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Output keys:
+                                    </th>
+                                    </tr>
+                                </thead>
+                                {output.length == 0 ?
+                                    <tbodu>
+                                        <tr>
+                                            <td>
+                                                null
+                                        </td>
+                                        </tr>
+                                    </tbodu>
+                                    :
+                                    <>
+                                        {output.map((item, index) => (
+                                            <tbody key={index}>
+                                                <tr>
+                                                    <td>
+                                                        {item}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        ))}
+                                    </>}
+                            </table>
                     </>
                     }
                     <br/>
-                    <button onClick={() => onChange()}>{update == 1 ? 'Submit' : 'Update'}</button>
+                    {props.creationFlag == false ?
+                        <div>
+                            <button onClick={() => onChange()}>{update == 1 ? 'Submit' : 'Update'}</button>
+                        </div>
+                        :
+                        <div>
+                        </div>
+                    }
                 </div>  
             }
         </div>

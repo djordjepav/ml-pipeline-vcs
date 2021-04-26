@@ -6,48 +6,45 @@ import TreeItem from '@material-ui/lab/TreeItem';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { useParams } from 'react-router-dom';
-import DatasetLoader from './Nodes/DatasetLoader';
-import ModelLoader from './Nodes/ModelLoader';
-import DataNormalizer from './Nodes/DataNormalizer';
-import DataPlotter from './Nodes/DataPlotter';
-import ModelEvaluator from './Nodes/ModelEvaluator';
-import DataStandardizer from './Nodes/DataStandardizer';
-import ModelPredictor from './Nodes/ModelPredictor';
-import FlowCreate from './FlowCreate';
-import FlowVersionCreate from './FlowVersionCreate';
+import { Link } from 'react-router-dom';
+
+import DatasetLoader from '../Nodes/DatasetLoader';
+import ModelLoader from '../Nodes/ModelLoader';
+import DataNormalizer from '../Nodes/DataNormalizer';
+import DataPlotter from '../Nodes/DataPlotter';
+import ModelEvaluator from '../Nodes/ModelEvaluator';
+import DataStandardizer from '../Nodes/DataStandardizer';
+import ModelPredictor from '../Nodes/ModelPredictor';
+import ExeWindow from './ExeWindow';
+
 
 export default function Flow(){
 
+    const {teamid} = useParams();
     const {rootid} = useParams();
     const {flowname} = useParams();
+    
     const [flowJson,setFlowJson] = useState([]);
     const [flowTree, setFlowTree] = useState([]);
-    const [creation, setCreation] = useState(0);
     const [cookies] = useCookies(['user']);
-    const [proba,setProba] = useState("proba");
     const [current,setCurrent] = useState("");
-    const [update,setUpdate] = useState(false);
-    const [nodes,setNodes] = useState(0);
-
-    const [flow,setFlow] = useState(
-    {
-        "created_by": cookies.id,
-        "flow_version" : current,
-        "serialized_flow": flowJson
-    })
+    const [updateFlag,setUpdateFlag] = useState(false);
+    
+    const [nodes,setNodes] = useState([]);
 
 
 
     useEffect(() => {
         getFlowTree();
-    },[] );
+    },[rootid] );
 
     useEffect(() => {
+        setFlowJson({...flowJson, nodes: nodes});
         updateFlowVersion();
-    },[nodes]);
+    },[updateFlag]);
 
-    const getFlowTree = async () =>
-    {
+
+    const getFlowTree = async () => {
         const requestOptions = {
             method: 'GET',
             headers:{
@@ -58,13 +55,12 @@ export default function Flow(){
             };
         const response = await fetch("http://localhost:8000/easy_flow/v1/flow_version/" + rootid + "/", requestOptions);
         const data = await response.json();
-        //console.log(data);
+        
         setFlowTree(data);
         setCurrent(rootid);
     }
 
-    const getFlowJson = async(versionid) =>
-    {
+    const getFlowJson = async(versionid) => {
         const requestOptions = {
             method: 'GET',
             headers:{
@@ -75,21 +71,18 @@ export default function Flow(){
             };
         const response = await fetch("http://localhost:8000/easy_flow/v1/flow_version_json/" + versionid + "/", requestOptions);
         const data = await response.json();
-        console.log(data);
 
         setFlowJson(data);
         setCurrent(versionid);
-        setCreation(0);
+        setNodes(data.nodes);
+        console.log(data.nodes);
     }
 
-    const updateFlowVersion = async() =>
-    {
-        if(nodes)
-        {
-            //console.log("UPDATE");
-            //console.log(flowJson);
+    const updateFlowVersion = async() => {
 
-            setNodes(0);
+        if(updateFlag)
+        {
+            setUpdateFlag(0);
 
             var flow = {
                 "created_by": cookies.id,
@@ -99,7 +92,7 @@ export default function Flow(){
             
             console.log(flow);
 
-            const requestOptions = {
+            const requestOptions = {    
                 method: 'PUT',
                 headers:{
                     'Authorization': 'Token ' + cookies.token,
@@ -116,15 +109,6 @@ export default function Flow(){
 
         }
     }
-
-
-
-    const handleCreate = () =>
-    {
-        setFlowJson([]);
-        setCreation(1);
-    }
-
 
     const renderTree = (nodes) => (
         <TreeItem key={nodes.id} nodeId={nodes.id} label={flowname + nodes.version} onClick={() => getFlowJson(nodes.id)}>
@@ -143,38 +127,41 @@ export default function Flow(){
                 {renderTree(flowTree)}
             </TreeView>
 
-            <p className="link" onClick={() => handleCreate()}>+ Flow version</p>
+            <Link to={`/flow/${teamid}/${flowname}/${rootid}/${current}/create`}>
+                <p className="link" >+ Flow version</p>
+            </Link>
+            
         </div>
         <div>
-        
-            {flowJson?.nodes?.map((node, index) => (
+            {nodes?.map((node, index) => (
                 <p>
                     {node.type == "data_normalizer" &&
-                    <DataNormalizer nodes={flowJson.nodes} setNodes={setNodes} creationFlag={false} id={index}/>}
+                    <DataNormalizer nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
 
                     {node.type == "data_plotter" &&
-                    <DataPlotter node={node} setNodes={setNodes} creationFlag={false} id={index}></DataPlotter>}
+                    <DataPlotter nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
                     
                     {node.type == "keras_dataset_loader" && 
-                    <DatasetLoader nodes={flowJson.nodes} setNodes={setNodes} creationFlag={false} id={index}/>}    
+                    <DatasetLoader nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}    
 
                     {node.type == "data_standardizer" &&
-                    <DataStandardizer nodes={flowJson.nodes} setNodes={setNodes} creationFlag={false} id={index}/>}
+                    <DataStandardizer nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
                     
                     {node.type == "model_evaluator" &&
-                    <ModelEvaluator nodes={flowJson.nodes} setNodes={setNodes} creationFlag={false} id={index}/>}
+                    <ModelEvaluator nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
 
                     {node.type == "model_loader" &&  
-                    <ModelLoader  node={node} setNodes={setNodes} creationFlag={false} id={index}/>}
+                    <ModelLoader  nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
                     
                     {node.type == "model_predictor" &&
-                    <ModelPredictor node={node} setNodes={setNodes} creationFlag={false} id={index}/>}
+                    <ModelPredictor nodes={flowJson.nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
+
                 </p>
             ))}
         </div>
-        {creation == 1 && 
-            <FlowVersionCreate flowname={flowname} flowid={rootid} prev={current}></FlowVersionCreate>
-        }
+        <div>
+            <ExeWindow></ExeWindow>
+        </div>
       </div>
     )
 }

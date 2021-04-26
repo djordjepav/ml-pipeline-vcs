@@ -1,4 +1,4 @@
-import React, { isValidElement, useEffect,useState } from 'react'
+import React, { useEffect,useState } from 'react'
 import { useParams } from "react-router-dom";
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
@@ -9,12 +9,8 @@ export default function Team(){
     const {leader} = useParams();
     const [team,setTeam] = useState([]);
     const [flows,setFlows] = useState([]);
-    const [flowname, setFlowname] = useState("");
     const [cookies] = useCookies(['user']);
 
-    const updateFlowname = e => {
-        setFlowname(e.target.value);
-    }
 
     const getTeam = async () =>
     {
@@ -69,19 +65,6 @@ export default function Team(){
         }
     }
 
-    const addFlow = async(e) => {
-        // const requestOptions = {
-        //     method: 'POST',
-        //     headers:{
-        //         'Authorization': 'Token ' + cookies.token,
-        //         'Content-Type': 'application/json',
-        //         'accept': 'application/json'
-        //     },
-        //     body: JSON.stringify({"created_by":cookies.id,"user":username,"team":teamid})
-        // };
-
-        alert("Flow added "+flowname);
-    }
 
     const removeFlow = async(flowid) => {
         const requestOptions = {
@@ -135,7 +118,7 @@ export default function Team(){
                         {flows?.map(flow=>(
                             <tr>
                                 <td>
-                                    <Link to={`/flow/${flow.name}/${flow.root.id}`}>
+                                    <Link to={`/flow/${teamid}/${flow.name}/${flow.root.id}`}>
                                         {flow.name}
                                     </Link>
                                 </td>
@@ -151,12 +134,14 @@ export default function Team(){
                         ))}
                     </tbody>
                 </table>
-                <p>Add new flow:</p>
-                <form onSubmit={addFlow}>
-                    Flow name: <input className="inputSignup" type="text" value={flowname} onChange={updateFlowname} />
-                    <br /><br />    
-                    <button type="submit" id="buttonSingup">Add flow</button>
-                </form>
+
+                <br/>
+                <br/>
+
+                <Link type="button" to={`/flow/${teamid}/create`}>
+                    Create new flow
+                </Link>
+                
             </div>
         </div>
     )

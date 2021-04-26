@@ -1,10 +1,10 @@
 #flow.content{
-    background-color:  #282c34;
-    color: white;
+    /* background-color:  #282c34; */
+    color: black;
     display: flex;
     flex-direction: row;
-
-    
+    min-height: 100vh;
+    margin-left: 0px;
 }
 
 hr{
@@ -19,7 +19,8 @@ hr{
     text-align: center;
 
     margin-left: 100px;
-    background-color: lightskyblue;
+    margin-bottom: 20px;
+    background-color: lightslategrey;
     color: black;
     min-height: 80px;
     min-width: 150px;
@@ -46,7 +47,7 @@ p{
 .flowCreate{
     font-size: medium;
     text-align: left;
-    margin-left: 100px;
+    margin-left: 0px;
     display: flex;
 }
 
@@ -64,4 +65,17 @@ p{
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 200px;
+}
+
+#side{
+    text-align: start;
+    width: 250px;
+    min-height: 100vh;
+    margin-right: 50px;
+    background-color: #282c34;
+}
+
+
+.exewind{
+    margin-left: 100px;
 }

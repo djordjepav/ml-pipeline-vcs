@@ -1,10 +1,6 @@
 import React, { useEffect,useState } from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import './Start.css'
-import TeamCreate from './TeamCreate';
-import UserProfil from './UserProfil';
-import Header from './Header';
 import { useCookies } from 'react-cookie';
 
 export default function Start({children}){
@@ -48,7 +44,7 @@ export default function Start({children}){
                         </p>
                         Your teams
                         {myTeams?.map(team => (
-                            <li>
+                            <li key={team.name}>
                                 <Link to={`/main/team/${team.id}/${1}`}>
                                     {team.name}
                                 </Link>
@@ -56,7 +52,7 @@ export default function Start({children}){
                         ))}
                         You are member
                         {teams?.map(team => (
-                            <li>
+                            <li key={team.name}>
                                 <Link to={`/main/team/${team.id}/${0}`}>
                                     {team.leader.username}/{team.name}
                                 </Link>

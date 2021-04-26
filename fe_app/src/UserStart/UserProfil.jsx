@@ -8,6 +8,13 @@ export default function UserProfil({user}){
     
     const [cookies] = useCookies(['user']);
 
+    const [flowJson,setFlowJson] = useState();
+    const [flow,setFlow] = useState(
+        {
+            created_by: cookies.id,
+            serialized_flow: {}
+        })
+
     useEffect(() => {
         //getUser();
     },[] );
@@ -50,6 +57,9 @@ export default function UserProfil({user}){
                         </td>
                     </tr>
             </table>
+
+        
+
         </div>
     )
 }

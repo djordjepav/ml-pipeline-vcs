@@ -6,7 +6,7 @@ import "./Header.css";
 
 export default function Header()
 {
-    const [cookies, setCookies, removeCookies] = useCookies(['user']);
+    const [cookies, removeCookies] = useCookies(['user']);
     const history = useHistory();
 
     const logout = async () => {

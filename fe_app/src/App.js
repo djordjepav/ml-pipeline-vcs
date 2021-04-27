@@ -53,19 +53,18 @@ export default function App() {
 
                 <React.Fragment>
 
-                  <Route path="/flow/:teamid/:flowname/:rootid/:prev/create/">
+                  <Route path="/flow/:teamid/:flowid/:flowname/:rootid/:prev/create/">
                     <FlowVersionCreate />
                   </Route>
 
-                  <Route exact={true} path="/flow/:teamid/:flowname/:rootid" forceRefresh={true} component={Flow}>
+                  <Route path="/flow/:teamid/:flowid/:flowname/:rootid" >
+                    <Flow />
                   </Route>
 
                   <Route exact={true} path="/flow/:teamid/create">
                     <FlowCreate />
                   </Route>
-
-
-
+                
                 </React.Fragment>
 
               </FlowContainer>

@@ -24,7 +24,7 @@ export default function DatasetLoader(props) {
 
             nodes[props.id].available_params = ["dataset"];
             nodes[props.id].params = {
-                "dataset": null
+                "dataset": "mnist"
             }
 
 
@@ -143,7 +143,7 @@ export default function DatasetLoader(props) {
 
     const changeDataset = (e) => {
         setDataset(e.currentTarget.value);
-
+        console.log(e.currentTarget.value);
         if(props.creationFlag){
             let nodes = [...props.nodes];
             nodes[props.id].params["dataset"] = e.target.value;

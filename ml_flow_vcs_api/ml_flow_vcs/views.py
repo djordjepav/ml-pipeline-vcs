@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from . import models, serializers
 
-fs_mount_point = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data')
+fs_mount_point = os.path.join('D:\\data')
 
 
 # POST login/ +
@@ -341,13 +341,15 @@ class FlowVersionExecute(generics.UpdateAPIView):
         if created_by == flow_version.created_by or \
                 (req.created_by == created_by and req.approved and req.from_date <= now() <= req.to_date):
 
-            env_path = os.path.join(comp_server.env_path, 'bin', 'python')
-            run_path = os.path.join(os.path.dirname(__file__), '..', '..', 'ml_flow_manager', 'scripts', 'run_flow.py')
+            env_path = os.path.join(comp_server.env_path, 'Scripts', 'python')
+            run_path = os.path.join('..', 'ml_flow_manager', 'scripts', 'run_flow.py')
             flow_path = os.path.abspath(flow_version.path)
 
-            env_path = env_path.replace(' ', '\\ ')
-            run_path = run_path.replace(' ', '\\ ')
-            flow_path = flow_path.replace(' ', '\\ ')
+            # env_path = env_path.replace(' ', '\\ ')
+            # run_path = run_path.replace(' ', '\\ ')
+            #run_path = '"' + run_path + '"'
+            # flow_path = flow_path.replace(' ', '\\ ')
+            #flow_path = '"' + flow_path + '"'
 
             cmd = '{0} {1} {2}'.format(env_path, run_path, flow_path)
             print("RUNNING: ", cmd)

@@ -112,7 +112,7 @@ class FlowManager(ProcessingNode):
 
     def deserialize(self, filename):
         with open(filename, 'r') as f:
-            json_data = json.load(f)
+            json_data = json.loads(f.read())
 
             self.__name = json_data['flow_name']
             self.__version = json_data['flow_version']

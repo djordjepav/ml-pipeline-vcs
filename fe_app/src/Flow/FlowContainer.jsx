@@ -11,7 +11,7 @@ export default function FlowContainer({children}){
 
     const [cookies] = useCookies(['user']);
     const {teamid} = useParams();
-    const {drugi} = useParams();
+
     const [team,setTeam] = useState([]);
     const [flows,setFlows] = useState([]);
 
@@ -44,7 +44,7 @@ export default function FlowContainer({children}){
                     <ul>
                         {flows?.map(flow =>(
                             <li key={flow.name}>
-                                <Link to={`/flow/${teamid}/${flow.name}/${flow.root.id}`} forceRefresh={true}>
+                                <Link to={`/flow/${teamid}/${flow.id}/${flow.name}/${flow.root.id}`} forceRefresh={true}>
                                     {flow.name}
                                 </Link>
                             </li>

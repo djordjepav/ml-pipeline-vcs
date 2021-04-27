@@ -50,6 +50,7 @@ export default function Start({children}){
                                 </Link>
                             </li>
                         ))}
+                        <br/>
                         You are member
                         {teams?.map(team => (
                             <li key={team.name}>

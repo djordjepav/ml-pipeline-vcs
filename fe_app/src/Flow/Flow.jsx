@@ -21,8 +21,11 @@ import ExeWindow from './ExeWindow';
 export default function Flow(){
 
     const {teamid} = useParams();
+    const {flowid} = useParams();
     const {rootid} = useParams();
     const {flowname} = useParams();
+
+    const [compServer, setCompServer] = useState("");
     
     const [flowJson,setFlowJson] = useState([]);
     const [flowTree, setFlowTree] = useState([]);
@@ -33,11 +36,11 @@ export default function Flow(){
     const [nodes,setNodes] = useState([]);
 
 
-
     useEffect(() => {
         getFlowTree();
     },[rootid] );
 
+    
     useEffect(() => {
         setFlowJson({...flowJson, nodes: nodes});
         updateFlowVersion();
@@ -55,7 +58,7 @@ export default function Flow(){
             };
         const response = await fetch("http://localhost:8000/easy_flow/v1/flow_version/" + rootid + "/", requestOptions);
         const data = await response.json();
-        
+
         setFlowTree(data);
         setCurrent(rootid);
     }
@@ -75,7 +78,6 @@ export default function Flow(){
         setFlowJson(data);
         setCurrent(versionid);
         setNodes(data.nodes);
-        console.log(data.nodes);
     }
 
     const updateFlowVersion = async() => {
@@ -105,9 +107,33 @@ export default function Flow(){
             const response = await fetch("http://localhost:8000/easy_flow/v1/flow_version_edit/",requestOptions);
             const data = await response.json();
 
-            console.log(data);
-
         }
+    }
+
+    const addComputationalServer = async() => {
+
+        var server = {
+            "created_by": cookies.id,
+            "flow": flowid,
+            "remote_user" : null,
+	        "remote_host" : "local",
+            "env_path": compServer
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers:{
+                'Authorization': 'Token ' + cookies.token,
+                'Content-Type': 'application/json',
+                'accept': 'application/json'
+            },
+            body: JSON.stringify(server)
+        };
+
+        const response = await fetch("http://localhost:8000/easy_flow/v1/comp_server_add/",requestOptions);
+        const data = await response.json();
+
+        console.log(data);
     }
 
     const renderTree = (nodes) => (
@@ -117,51 +143,62 @@ export default function Flow(){
     );
           
     return(
-      <div className="content" id="flow">
-        <div >
-            <TreeView
-                defaultCollapseIcon={<ExpandMoreIcon />}
-                defaultExpanded={['root']}
-                defaultExpandIcon={<ChevronRightIcon />}
-            >
-                {renderTree(flowTree)}
-            </TreeView>
+        <div className="content" id="flow">
+            <div className="leftContent">
+                <div className="update">
+                    <div>
+                        <TreeView
+                            defaultCollapseIcon={<ExpandMoreIcon />}
+                            defaultExpanded={['root']}
+                            defaultExpandIcon={<ChevronRightIcon />}
+                        >
+                            {renderTree(flowTree)}
+                        </TreeView>
 
-            <Link to={`/flow/${teamid}/${flowname}/${rootid}/${current}/create`}>
-                <p className="link" >+ Flow version</p>
-            </Link>
-            
+                        <Link to={`/flow/${teamid}/${flowid}/${flowname}/${rootid}/${current}/create`}>
+                            <p className="link" >+ Flow version</p>
+                        </Link>
+                        
+                    </div>
+                    <div>
+                        {nodes?.map((node, index) => (
+                            <p>
+                                {node.type == "data_normalizer" &&
+                                <DataNormalizer nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
+
+                                {node.type == "data_plotter" &&
+                                <DataPlotter nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
+                                
+                                {node.type == "keras_dataset_loader" && 
+                                <DatasetLoader nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}    
+
+                                {node.type == "data_standardizer" &&
+                                <DataStandardizer nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
+                                
+                                {node.type == "model_evaluator" &&
+                                <ModelEvaluator nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
+
+                                {node.type == "model_loader" &&  
+                                <ModelLoader  nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
+                                
+                                {node.type == "model_predictor" &&
+                                <ModelPredictor nodes={flowJson.nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
+
+                            </p>
+                        ))}
+                    </div>
+                </div>
+                <div>
+                    Add computational server to this flow
+                    <br/>
+                    Path: <input className="inputNode" type="text" value={compServer} onChange={(e) => setCompServer(e.target.value)}/>
+                    <br/>
+                    <button onClick={addComputationalServer}>Add</button>
+                </div>
+            </div>
+            <div className="exewind">
+                <ExeWindow key={current} current={current}></ExeWindow>
+            </div>
         </div>
-        <div>
-            {nodes?.map((node, index) => (
-                <p>
-                    {node.type == "data_normalizer" &&
-                    <DataNormalizer nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
-
-                    {node.type == "data_plotter" &&
-                    <DataPlotter nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
-                    
-                    {node.type == "keras_dataset_loader" && 
-                    <DatasetLoader nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}    
-
-                    {node.type == "data_standardizer" &&
-                    <DataStandardizer nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
-                    
-                    {node.type == "model_evaluator" &&
-                    <ModelEvaluator nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
-
-                    {node.type == "model_loader" &&  
-                    <ModelLoader  nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
-                    
-                    {node.type == "model_predictor" &&
-                    <ModelPredictor nodes={flowJson.nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
-
-                </p>
-            ))}
-        </div>
-        <div>
-            <ExeWindow></ExeWindow>
-        </div>
-      </div>
     )
 }

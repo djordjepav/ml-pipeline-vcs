@@ -118,7 +118,7 @@ export default function Team(){
                         {flows?.map(flow=>(
                             <tr>
                                 <td>
-                                    <Link to={`/flow/${teamid}/${flow.name}/${flow.root.id}`}>
+                                    <Link to={`/flow/${teamid}/${flow.id}/${flow.name}/${flow.root.id}`}>
                                         {flow.name}
                                     </Link>
                                 </td>

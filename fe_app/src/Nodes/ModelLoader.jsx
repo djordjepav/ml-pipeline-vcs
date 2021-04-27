@@ -248,7 +248,7 @@ export default function ModelLoader(props) {
 
         if(props.creationFlag){
             let nodes = [...props.nodes];
-            nodes[props.id].params["epochs"] = e.target.value;
+            nodes[props.id].params["epochs"] = parseInt(e.target.value);
             props.setNodes(nodes);
         }
     }
@@ -258,7 +258,7 @@ export default function ModelLoader(props) {
 
         if(props.creationFlag){
             let nodes = [...props.nodes];
-            nodes[props.id].params["batchSize"] = e.target.value;
+            nodes[props.id].params["batchSize"] = parseInt(e.target.value);
             props.setNodes(nodes);
         }
     }

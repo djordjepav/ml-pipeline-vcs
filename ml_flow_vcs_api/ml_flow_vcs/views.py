@@ -221,37 +221,34 @@ class FlowViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-# PUT flow_version_execute/
-class FlowVersionExecute(generics.UpdateAPIView):
+# PUT flow_execute/
+class FlowExecute(generics.UpdateAPIView):
     def update(self, request):
         data = request.data
 
-        created_by = models.User.objects.get(id=data['created_by'])
         flow_version = models.FlowVersion.objects.get(id=data['flow_version'])
-        comp_server = models.ComputationalServer.objects.get(id=data['comp_server'])
-        req = None
+        created_by = models.User.objects.get(id=data['created_by'])
+        comp_server = None
 
-        if data['request']:
-            req = models.Request.objects.get(id=data['request'])
+        exec = False
+        if created_by == flow_version.flow.team.leader:
+            comp_server = models.ComputationalServer.object.get(id=data['comp_server'])
+            exec = True
+        else:
+            reqs = models.Request.objects.filter(created_by=created_by)
+            for req in reqs:
+                if req.approved and req.from_data < now() < req.to_date:
+                    comp_server = req.computational_server
+                    exec = True
+                    break
 
-        if created_by == flow_version.created_by or \
-                (req.created_by == created_by and req.approved and req.from_date <= now() <= req.to_date):
+        if exec:
+            if comp_server.remote_host == 'local':
+                cmd = comp_server.env_path
+                # TODO: Execute flow
+            # TODO: Implement remote execution
 
-            env_path = os.path.join(comp_server.env_path, 'bin', 'python')
-            run_path = os.path.join(os.path.dirname(__file__), '..', '..', 'ml_flow_manager', 'scripts', 'run_flow.py')
-            flow_path = os.path.abspath(flow_version.path)
-
-            env_path = env_path.replace(' ', '\\ ')
-            run_path = run_path.replace(' ', '\\ ')
-            flow_path = flow_path.replace(' ', '\\ ')
-
-            cmd = '{0} {1} {2}'.format(env_path, run_path, flow_path)
-            print("RUNNING: ", cmd)
-            os.system(cmd)
-
-            return Response({'detail': 'success'})
-
-        return Response({'detail': 'failed'})
+        return Response({'detail': 'success'})
 
 
 # DELETE flow_remove/ +

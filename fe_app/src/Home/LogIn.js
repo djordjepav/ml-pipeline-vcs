@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useCookies } from 'react-cookie';
 import {useHistory} from "react-router-dom";
+import { useToasts } from 'react-toast-notifications'
+
 
 export default function LogIn() {
 
@@ -8,7 +10,9 @@ export default function LogIn() {
     const [password, setPassword] = useState("");
     const [isError, setIsError] = useState(false);
     const [cookies, setCookies, removeCookies] = useCookies(['user']);
+
     const history = useHistory();
+    const { addToast } = useToasts()
 
     const updateUsername = e => {
         setUsername(e.target.value);
@@ -34,23 +38,16 @@ export default function LogIn() {
 
         if(response.ok)
         {
-            /*
-            const requestOptionsCookie = {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Token ' + data.token,
-                    'Content-Type': 'application/json' 
-                }
-            };
-            const responseCookie = await fetch('http://localhost:8000/easy_flow/v1/get_cookie/'+data.user.id+"/",requestOptionsCookie);
-            const dataCookie = await responseCookie.json();
-            console.log(responseCookie);
-            console.log(dataCookie);*/
-
             setCookies("token",data.token);
             setCookies("id",data.user.id);
             console.log("OK");
-            console.log(data);  
+            console.log(data);
+
+            addToast("Successful login", {
+                appearance: 'success',
+                autoDismiss: true,
+            })
+
             history.push("/main");
         }
         else{

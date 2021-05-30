@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
@@ -39,9 +39,9 @@ export default function Home()
           </p>
         </div>
         <div className="signDiv">
-          <Link onClick={handlerRegister}> Register </Link>
+          <a onClick={handlerRegister}> Register </a>
           /
-          <Link onClick={handlerLogIn}> LogIn </Link>
+          <a onClick={handlerLogIn}> LogIn </a>
           <br/>
           {isLog == true ?
             <LogIn></LogIn>

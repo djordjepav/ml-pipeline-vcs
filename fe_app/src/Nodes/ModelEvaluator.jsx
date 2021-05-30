@@ -6,7 +6,7 @@ export default function ModelEvaluator(props) {
     const [update, setUpdate] = useState(0);
     const [details, setDetails] = useState(0);
 
-    const [index, setIndex] = useState("");
+    const [index, setIndex] = useState();
 
     const [input, setInput] = useState([]);
     const [output, setOutput] = useState([]);
@@ -15,26 +15,27 @@ export default function ModelEvaluator(props) {
         if (props.creationFlag == true) {
             setUpdate(true);
 
-            //mesto za dodavanje parametara
+            if(props.nodes[props.id].available_params == null) {
+                //mesto za dodavanje parametara
 
-            let nodes = [...props.nodes];
+                let nodes = [...props.nodes];
 
-            nodes[props.id].available_params = ["index"];
-            nodes[props.id].params = {
-                "index": null
+                nodes[props.id].available_params = ["index"];
+                nodes[props.id].params = {
+                    "index": null
+                }
+                props.setNodes(nodes);
             }
-
-            props.setNodes(nodes);
         }
     }, []);
 
 
     useEffect(() => {
-        if (props.creationFlag == false) {
+        //if (props.creationFlag == false) {
             setInput(props.nodes[props.id].input_keys);
-            setOutput(props.nodes[props.id]?.output_keys);
+            setOutput(props.nodes[props.id].output_keys);
             setIndex(props.nodes[props.id].params["index"]);
-        }
+        //}
     }, [props.nodes]);
 
 
@@ -42,69 +43,127 @@ export default function ModelEvaluator(props) {
         setUpdate(!update);
         if (update) {
 
-            let nodes = props.nodes;
-
+            let nodes = [...props.nodes];
             nodes[props.id].input_keys = input;
             nodes[props.id].output_keys = output;
             nodes[props.id].params["index"] = index;
-
+            
             props.setNodes(nodes);
-            props.setUpdateFlag(1)
+            props.setUpdateFlag(1);
         }
     }
 
-
-    const addInput = () => {
-        setInput(input => [...input, "null"]);
+    const deleteNode = () => {
+        let nodes = [...props.nodes];
+        nodes.splice(props.id,1);
+        props.setNodes(nodes);
+        console.log(nodes);
     }
 
+    const addInput = () => {
+
+        let temp = [...input];
+        temp.push("null");
+        setInput(temp);
+
+        if (props.creationFlag) {
+
+            let nodes = [...props.nodes];
+            nodes[props.id].input_keys = temp;
+            props.setNodes(nodes);
+        }
+
+    }
     const removeInput = (index) => {
         var temp = [...input];
         temp.splice(index, 1);
         setInput(temp);
+
+        if (props.creationFlag) {
+
+            let nodes = [...props.nodes];
+            nodes[props.id].input_keys = temp;
+            props.setNodes(nodes);
+        }
     }
 
     const changeInput = (index, e) => {
         var temp = [...input];
         temp[index] = e.target.value;
         setInput(temp);
+
+
+        if (props.creationFlag) {
+
+            let nodes = [...props.nodes];
+            nodes[props.id].input_keys = temp;
+            props.setNodes(nodes);
+        }
     }
 
     const addOutput = () => {
-        setOutput(output => [...output, "null"]);
+
+        let temp = [...output];
+        temp.push("null");
+        setOutput(temp);
+
+        if (props.creationFlag) {
+
+            let nodes = [...props.nodes];
+            nodes[props.id].output_keys = temp;
+            props.setNodes(nodes);
+        }
     }
 
     const removeOutput = (index) => {
         var temp = [...output];
         temp.splice(index, 1);
         setOutput(temp);
+
+        if (props.creationFlag) {
+
+            let nodes = [...props.nodes];
+            nodes[props.id].output_keys = temp;
+            props.setNodes(nodes);
+        }
     }
 
     const changeOutput = (index, e) => {
         var temp = [...output];
         temp[index] = e.target.value;
         setOutput(temp);
+
+        if (props.creationFlag) {
+
+            let nodes = [...props.nodes];
+            nodes[props.id].output_keys = temp;
+            props.setNodes(nodes);
+        }
     }
 
     const changeIndex = (e) => {
-        setIndex(e.target.value);
+        setIndex(e.target.value)
 
         if (props.creationFlag) {
             let nodes = [...props.nodes];
             nodes[props.id].params["index"] = e.target.value;
             props.setNodes(nodes);
         }
-
     }
 
     return (
         <div className="node">
             {details == 0 && <br />}
-            <span onClick={() => setDetails(!details)}><b>ModelEvaluator</b></span>
+            <span onClick={() => setDetails(!details)}>
+                <b>ModelEvaluator </b>
+                {props.creationFlag &&
+                    <button onClick={() => deleteNode()}>-
+                    </button>}
+            </span>
             {details == 1 &&
                 <div>
                     <hr></hr>
-                    {update ?
+                    {update == 1 ?
                         <>
                             <table className="NodeTable">
                                 <thead>
@@ -170,14 +229,12 @@ export default function ModelEvaluator(props) {
                                     </>}
                             </table>
                             <table>
-                                <tbody>
-                                    <tr>
-                                        <th> Index: </th>
-                                        <td>
-                                            <input type="text" value={index} onChange={(e) => changeIndex(e)} />
-                                        </td>
-                                    </tr>
-                                </tbody>
+                                <tr>
+                                    <th> Index: </th>
+                                    <td>
+                                        <input type="number" value={index} onChange={(e) => changeIndex(e)} />
+                                    </td>
+                                </tr>
                             </table>
                         </>
                         :
@@ -191,7 +248,7 @@ export default function ModelEvaluator(props) {
 
                                     </tr>
                                 </thead>
-                                {input.length == 0 ?
+                                {input?.length == 0 ?
                                     <tbody>
                                         <tr>
                                             <td>

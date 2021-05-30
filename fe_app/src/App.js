@@ -6,19 +6,24 @@ import UserProfil from "./UserStart/UserProfil.jsx";
 import Start from "./UserStart/Start.js";
 import Team from "./UserStart/Team.jsx";
 import TeamCreate from "./UserStart/TeamCreate.jsx";
+import Chat from "./Chat/Chat"
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Flow from "./Flow/Flow.jsx";
 import FlowVersionCreate from "./Flow/FlowVersionCreate.jsx";
 import FlowContainer from "./Flow/FlowContainer.jsx";
 import FlowCreate from "./Flow/FlowCreate.jsx";
+import { ToastProvider } from 'react-toast-notifications'
 
 export default function App() {
 
   return (
     <div className="App">
+      
+      <ToastProvider>
       <Router>
         <Switch>
+          <Route path="/chat" component={Chat} />
           <Route path='/' exact={true} component={Home} />
           <Route path="/about" component={About} />
 
@@ -38,7 +43,7 @@ export default function App() {
                       <TeamCreate user={user} />
                     </Route>
 
-                    <Route path="/main/team/:teamid/:leader" forceRefresh={true}>
+                    <Route path="/main/team/:teamid/:leader" >
                       <Team />
                     </Route>
 
@@ -57,7 +62,7 @@ export default function App() {
                     <FlowVersionCreate />
                   </Route>
 
-                  <Route path="/flow/:teamid/:flowid/:flowname/:rootid" >
+                  <Route exact={true} path="/flow/:teamid/:flowid/:flowname/:rootid" >
                     <Flow />
                   </Route>
 
@@ -76,6 +81,7 @@ export default function App() {
           </Main>
         </Switch>
       </Router>
+      </ToastProvider>
     </div>
   );
 }

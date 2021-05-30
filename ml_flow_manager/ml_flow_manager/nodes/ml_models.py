@@ -16,6 +16,7 @@ class PublishCallback(Callback):
         self._channel = channel
 
     def on_epoch_end(self, epoch, logs=None):
+        # self._redis_publisher.publish(self._channel, json.dumps(logs))
         self._redis_publisher.publish(self._channel, json.dumps(logs))
 
 
@@ -41,7 +42,7 @@ class ModelLoader(Model):
 
         publish = self._params['publish']
         if publish:
-            pub_callback = PublishCallback(publish)
+            pub_callback = PublishCallback("flow_{0}".format(publish))
             callback_list.append(pub_callback)
 
         model = load_model(model_path)

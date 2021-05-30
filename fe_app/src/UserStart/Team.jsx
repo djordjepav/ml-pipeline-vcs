@@ -74,12 +74,13 @@ export default function Team(){
                 'Content-Type': 'application/json',
                 'accept': 'application/json'
             },
-            body: JSON.stringify({"flow":cookies.id})
+            body: JSON.stringify({"flow":flowid})
         };
 
         const response = await fetch("http://localhost:8000/easy_flow/v1/flow_remove/",requestOptions);
         
         console.log(response);    
+        getTeam();
     }
 
 
@@ -91,7 +92,7 @@ export default function Team(){
                 <h2>Members</h2>
                 <ul>
                 {team?.members?.map(member => (
-                    <li>{member.username}</li>
+                    <li key={member.username}>{member.username}</li>
                   ))}
                 </ul>
                 <br/>
@@ -111,12 +112,14 @@ export default function Team(){
                 <h2>Flows created by this team:</h2>
                 <table className="flowsTable">
                     <thead>
-                        <th>Flow name</th>
-                        <th>Created:</th>
+                        <tr>
+                            <th>Flow name</th>
+                            <th>Created:</th>
+                        </tr>
                     </thead>
                     <tbody>
                         {flows?.map(flow=>(
-                            <tr>
+                            <tr key={flow.name}>
                                 <td>
                                     <Link to={`/flow/${teamid}/${flow.id}/${flow.name}/${flow.root.id}`}>
                                         {flow.name}

@@ -15,27 +15,28 @@ export default function ModelPredictor(props) {
         if (props.creationFlag == true) {
             setUpdate(true);
 
+            if(props.nodes[props.id].available_params == null) {
+                //mesto za dodavanje parametara
 
-            //mesto za dodavanje parametara
+                let nodes = [...props.nodes];
 
-            let nodes = [...props.nodes];
-
-            nodes[props.id].available_params = ["index"];
-            nodes[props.id].params = {
-                "index": null
+                nodes[props.id].available_params = ["index"];
+                nodes[props.id].params = {
+                    "index": null
+                }
+                props.setNodes(nodes);
             }
-            props.setNodes(nodes);
         }
 
     }, []);
 
 
     useEffect(() => {
-        if (props.creationFlag == false) {
-            setIndex(props.nodes[props.id].params["index"]);
+        //if (props.creationFlag == false) {
+            setIndex(props.nodes[props.id]?.params["index"]);
             setInput(props.nodes[props.id].input_keys);
             setOutput(props.nodes[props.id].output_keys);
-        }
+        //}
     }, [props.nodes]);
 
 
@@ -54,7 +55,12 @@ export default function ModelPredictor(props) {
         }
     }
 
-
+    const deleteNode = () => {
+        let nodes = [...props.nodes];
+        nodes.splice(props.id,1);
+        props.setNodes(nodes);
+        console.log(nodes);
+    }
 
     const addInput = () => {
 
@@ -150,7 +156,12 @@ export default function ModelPredictor(props) {
     return (
         <div className="node">
             {details == 0 && <br />}
-            <span onClick={() => setDetails(!details)}><b>ModelPredictor</b></span>
+            <span onClick={() => setDetails(!details)}>
+                <b>ModelPredictor </b>
+                {props.creationFlag &&
+                    <button onClick={() => deleteNode()}>-
+                    </button>}
+            </span>
             {details == 1 &&
                 <div>
                     <hr></hr>

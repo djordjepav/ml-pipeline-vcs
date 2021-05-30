@@ -44,7 +44,7 @@ export default function FlowContainer({children}){
                     <ul>
                         {flows?.map(flow =>(
                             <li key={flow.name}>
-                                <Link to={`/flow/${teamid}/${flow.id}/${flow.name}/${flow.root.id}`} forceRefresh={true}>
+                                <Link to={`/flow/${teamid}/${flow.id}/${flow.name}/${flow.root.id}`} >
                                     {flow.name}
                                 </Link>
                             </li>

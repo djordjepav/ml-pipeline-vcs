@@ -20,10 +20,9 @@ export default function FlowCreate(){
     const [flowname, setFlowName] = useState("");
     const [initialVersion, setInitialVersion] = useState("");
 
-
     const [nodes, setNodes] = useState([]);
     const [isMount, setIsMount] = useState(1);
-
+    const [save, setSave] = useState(false);
 
     //const [nodeComponents, setNodeComponents] = useState();
     //const [nodesCount, setNodesCount] = useState(0);
@@ -42,9 +41,19 @@ export default function FlowCreate(){
     useEffect(() => {
         if(isMount)
             setIsMount(0);
-        else
-            createFlowVersion();
+        else {
+            if(save==true){
+                //createFlowVersion();
+                console.log(flow);
+                setSave(false);
+            }
+        }
     },[flow] );
+
+
+    // useEffect(() => {
+    //     console.log(nodes)
+    // },[nodes] );
 
 
     const createFlowVersion = async() => {
@@ -66,12 +75,13 @@ export default function FlowCreate(){
 
     const handleSave = () => {
         setFlow({...flow, serialized_flow: {...flow.serialized_flow,flow_name: flowname, flow_version: initialVersion, nodes: nodes}});
+        setSave(true);
     }
 
     const addNode = (type) => {
 
         var node = {
-            "available_params": [],
+            "available_params": null,
             "input_keys": [],
             "output_keys": [],
             "params": {},
@@ -119,7 +129,7 @@ export default function FlowCreate(){
                         <ModelEvaluator nodes={nodes} setNodes={setNodes} creationFlag={true} id={index}/>}
 
                         {node.type == "model_loader" &&  
-                        <ModelLoader  nodes={nodes} setNodes={setNodes} creationFlag={true} id={index}/>}
+                        <ModelLoader teamid={teamid} nodes={nodes} setNodes={setNodes} creationFlag={true} id={index}/>}
                         
                         {node.type == "model_predictor" &&
                         <ModelPredictor nodes={nodes} setNodes={setNodes} creationFlag={true} id={index}/>}

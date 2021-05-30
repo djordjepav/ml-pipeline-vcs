@@ -18,7 +18,7 @@ import ModelPredictor from '../Nodes/ModelPredictor';
 export default function FlowVersionCreate(){
 
     const [cookies] = useCookies(['user']);
-    //const {teamid} = useParams();
+    const {teamid} = useParams();
     const {rootid} = useParams();
     const {flowname} = useParams();
     const {prev} = useParams();
@@ -28,7 +28,7 @@ export default function FlowVersionCreate(){
 
     const [nodes, setNodes] = useState([]);
     const [isMount, setIsMount] = useState(1);
-
+    const [save, setSave] = useState(false);
 
     const [flow,setFlow] = useState(
     {
@@ -45,10 +45,37 @@ export default function FlowVersionCreate(){
 
     useEffect(() => {
         if(isMount)
-            setIsMount(0);
-        else
+        setIsMount(0);
+    else {
+        if(save==true){
             createFlowVersion();
+            console.log(flow);
+            setSave(false);
+        }
+    }
     },[flow] );
+
+    useEffect(() => {
+        getFlowJson();
+    },[prev]);
+
+
+    const getFlowJson = async() => {
+        const requestOptions = {
+            method: 'GET',
+            headers:{
+                'Authorization': 'Token ' + cookies.token,
+                'Content-Type': 'application/json',
+                'accept': 'application/json'
+            }
+            };
+        const response = await fetch("http://localhost:8000/easy_flow/v1/flow_version_json/" + prev + "/", requestOptions);
+        const data = await response.json();
+
+        setNodes(data.nodes);
+        console.log(data);
+    }
+
 
 
     const createFlowVersion = async() => {
@@ -71,12 +98,13 @@ export default function FlowVersionCreate(){
 
     const handleSave = () => {
         setFlow({...flow, serialized_flow: {...flow.serialized_flow,flow_name: flowname, flow_version: initialVersion, nodes: nodes}});
+        setSave(true);
     }
 
     const addNode = (type) => {
 
         var node = {
-            "available_params": [],
+            "available_params": null,
             "input_keys": [],
             "output_keys": [],
             "params": {},
@@ -124,7 +152,7 @@ export default function FlowVersionCreate(){
                         <ModelEvaluator nodes={nodes} setNodes={setNodes} creationFlag={true} id={index}/>}
 
                         {node.type == "model_loader" &&  
-                        <ModelLoader  nodes={nodes} setNodes={setNodes} creationFlag={true} id={index}/>}
+                        <ModelLoader  teamid={teamid} nodes={nodes} setNodes={setNodes} creationFlag={true} id={index}/>}
                         
                         {node.type == "model_predictor" &&
                         <ModelPredictor nodes={nodes} setNodes={setNodes} creationFlag={true} id={index}/>}

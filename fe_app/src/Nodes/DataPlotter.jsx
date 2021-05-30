@@ -16,26 +16,27 @@ export default function DataPlotter(props) {
         if (props.creationFlag == true) {
             setUpdate(true);
 
-            //mesto za dodavanje parametara
+            if(props.nodes[props.id].available_params == null) {
+                //mesto za dodavanje parametara
 
-            let nodes = [...props.nodes];
+                let nodes = [...props.nodes];
 
-            nodes[props.id].available_params = ["index"];
-            nodes[props.id].params = {
-                "index": null
+                nodes[props.id].available_params = ["index"];
+                nodes[props.id].params = {
+                    "index": null
+                }
+
+                props.setNodes(nodes);
             }
-
-            props.setNodes(nodes);
-
         }
     }, []);
 
     useEffect(() => {
-        if (props.creationFlag == false) {
+        //if (props.creationFlag == false) {
             setIndex(props.nodes[props.id].params["index"]);
             setInput(props.nodes[props.id].input_keys);
             setOutput(props.nodes[props.id].output_keys);
-        }
+        //}
     }, []);
 
 
@@ -57,6 +58,12 @@ export default function DataPlotter(props) {
         }
     }
 
+    const deleteNode = () => {
+        let nodes = [...props.nodes];
+        nodes.splice(props.id,1);
+        props.setNodes(nodes);
+        console.log(nodes);
+    }
 
 
     const addInput = () => {
@@ -145,16 +152,20 @@ export default function DataPlotter(props) {
 
         if(props.creationFlag){
             let nodes = [...props.nodes];
-            nodes[props.id].params["index"] = e.target.value;
+            nodes[props.id].params["index"] = parseInt(e.target.value);
             props.setNodes(nodes);
         }
-       
     }
 
     return (
         <div className="node">
             {details == 0 && <br />}
-            <span onClick={() => setDetails(!details)}><b>DataPlotter</b></span>
+            <span onClick={() => setDetails(!details)}>
+                <b>DataPlotter </b>
+                {props.creationFlag &&
+                    <button onClick={() => deleteNode()}>-
+                    </button>}
+            </span>
             {details == 1 &&
                 <div>
                     <hr></hr>
@@ -228,7 +239,7 @@ export default function DataPlotter(props) {
                                     <tr>
                                         <th> Index: </th>
                                         <td>
-                                            <input type="text" value={index} onChange={(e) => changeIndex(e)} />
+                                            <input className="inputNode" type="number" value={index} onChange={(e) => changeIndex(e)} />
                                         </td>
                                     </tr>
                                 </tbody>

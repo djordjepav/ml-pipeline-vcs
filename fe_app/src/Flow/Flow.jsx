@@ -35,6 +35,8 @@ export default function Flow(){
     
     const [nodes,setNodes] = useState([]);
 
+    const [test,setTest] = useState("DA");
+
 
     useEffect(() => {
         getFlowTree();
@@ -59,6 +61,8 @@ export default function Flow(){
         const response = await fetch("http://localhost:8000/easy_flow/v1/flow_version/" + rootid + "/", requestOptions);
         const data = await response.json();
 
+        //console.log(data);
+        getFlowJson(rootid);
         setFlowTree(data);
         setCurrent(rootid);
     }
@@ -78,6 +82,7 @@ export default function Flow(){
         setFlowJson(data);
         setCurrent(versionid);
         setNodes(data.nodes);
+        //console.log(data);
     }
 
     const updateFlowVersion = async() => {
@@ -157,8 +162,7 @@ export default function Flow(){
 
                         <Link to={`/flow/${teamid}/${flowid}/${flowname}/${rootid}/${current}/create`}>
                             <p className="link" >+ Flow version</p>
-                        </Link>
-                        
+                        </Link>                    
                     </div>
                     <div>
                         {nodes?.map((node, index) => (
@@ -179,7 +183,7 @@ export default function Flow(){
                                 <ModelEvaluator nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
 
                                 {node.type == "model_loader" &&  
-                                <ModelLoader  nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
+                                <ModelLoader teamid={teamid} nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
                                 
                                 {node.type == "model_predictor" &&
                                 <ModelPredictor nodes={flowJson.nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
@@ -188,11 +192,9 @@ export default function Flow(){
                         ))}
                     </div>
                 </div>
-                <div>
-                    Add computational server to this flow
-                    <br/>
-                    Path: <input className="inputNode" type="text" value={compServer} onChange={(e) => setCompServer(e.target.value)}/>
-                    <br/>
+                <div className="compserveradd">
+                    <p>Add computational server to this flow</p>
+                    <p>Environment path: <input className="inputNode" type="text" value={compServer} onChange={(e) => setCompServer(e.target.value)}/></p>
                     <button onClick={addComputationalServer}>Add</button>
                 </div>
             </div>

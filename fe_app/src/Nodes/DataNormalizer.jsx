@@ -12,21 +12,40 @@ export default function DataNormalizer(props) {
     const [output, setOutput] = useState([]);
 
 
+    // useEffect(() => {
+    //     if (props.creationFlag == true) {
+    //         setUpdate(true);
+    //         setInput(props.nodes[props.id].input_keys);
+    //         setOutput(props.nodes[props.id].output_keys);
+    //         //mesto za dodavanje parametara, ovde ih nema      OVO IMA SMISLA TREBBA SAMO DA SE TESTIRA
+    //     }
+
+    // }, [props.nodes]);
+
     useEffect(() => {
         if (props.creationFlag == true) {
             setUpdate(true);
 
-            //mesto za dodavanje parametara, ovde ih nema
+            if(props.nodes[props.id].available_params == null) {
+                //mesto za dodavanje parametara
+
+                let nodes = [...props.nodes];
+
+                nodes[props.id].available_params = [];
+                
+                props.setNodes(nodes);
+            }
         }
 
     }, []);
 
+
     useEffect(() => {
 
-        if (props.creationFlag == false) {
+        //if (props.creationFlag == false) {
             setInput(props.nodes[props.id].input_keys);
             setOutput(props.nodes[props.id].output_keys);
-        }
+        //}
     }, [props.nodes]);
 
 
@@ -46,11 +65,12 @@ export default function DataNormalizer(props) {
         }
     }
 
-    // const deleteNode = () => {
-    //     let nodes = [...props.nodes];
-    //     nodes.splice(props.id,1);
-    //     props.setNodes(nodes);
-    // }
+    const deleteNode = () => {
+        let nodes = [...props.nodes];
+        nodes.splice(props.id,1);
+        props.setNodes(nodes);
+        console.log(nodes);
+    }
 
 
     const addInput = () => {
@@ -139,9 +159,12 @@ export default function DataNormalizer(props) {
     return (
         <div className="node">
             {details == 0 && <br />}
-            <span onClick={() => setDetails(!details)}><b>DataNormalizer</b></span>
-            {/* {props.creationFlag &&
-            <button onClick={() => deleteNode()}>-</button>} */}
+            <span onClick={() => setDetails(!details)}>
+                <b>DataNormalizer </b>
+                {props.creationFlag &&
+                    <button onClick={() => deleteNode()}>-
+                    </button>}
+            </span>
             {details == 1 &&
                 <div>
                     <hr></hr>

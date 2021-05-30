@@ -78,11 +78,26 @@ p{
 
 .exewind{
     position: absolute;
-    margin-left: 500px;
+    margin-left: 600px;
+    margin-top: 10px;
 }
 
 .update {
     display: flex;
     flex-direction: row;
     min-height: 450px;
+}
+
+.compservers{
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.compserveradd{
+    margin-top: 50px;
+}
+
+.exetitle{
+    font-size: larger;
+    margin-bottom: 0px;
 }

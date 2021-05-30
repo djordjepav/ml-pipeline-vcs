@@ -7,7 +7,6 @@ export default function ExeWindow({current}){
 
     const {teamid} = useParams();
     const {flowid} = useParams();
-    const {rootid} = useParams();
 
     const [cookies] = useCookies(['user']);
 
@@ -15,18 +14,19 @@ export default function ExeWindow({current}){
     const [flow,setFlow] = useState(undefined);
     const [team,setTeam] = useState(undefined);
     const [servers,setServers] = useState([]);
-    const [requests, setRequests] = useState([]);
+    const [sentRequests, setSentRequests] = useState([]);
+    const [receivedRequests, setReceivedRequests] = useState([]);
 
     const [permissions, setPermissions] = useState(0);
 
-    const [selectedServer, setSelectedServer] = useState('');
+    const [selectedServer, setSelectedServer] = useState(null);
     const [fromDate, setFromDate] = useState(undefined);
     const [toDate, setToDate] = useState(undefined)
 
 
     useEffect(() => {
         getUser();
-    },[flowid]);
+    },[]);
    
     const getUser = async () =>
     {
@@ -40,31 +40,36 @@ export default function ExeWindow({current}){
             };
         const response = await fetch("http://localhost:8000/easy_flow/v1/user/" + cookies.id +"/", requestOptions);
         const data = await response.json();
+
+        setSentRequests([]);
+        setReceivedRequests([]);
+
+        console.log(data);
+
+        for(let i=0;i<data.sent_requests.length;i++){
+            let req = data.sent_requests[i];
+            if(req.version.id == current)
+                setSentRequests(sentRequests => [...sentRequests,req]);
+        }
+        for(let i=0;i<data.received_requests.length;i++){
+            let req = data.received_requests[i];
+            if(req.version.id == current){
+                setReceivedRequests(receivedRequests => [...receivedRequests,req]);
+            }
+                
+        }
         setUser(data);
     }
 
-    useEffect(() => {
-        if(user.sent_requests != undefined){
-            getRequests();
-        }
-    },[user.sent_requests] );
-
-    const getRequests = () => {
-        let temp = user.sent_requests.filter(req => req.version.id === current);
-
-        if(temp != undefined){
-            setRequests(temp);
-        }
-        else{
-            setRequests([]);
-        }
-            
-    }
+    // useEffect(() => {
+    //     if(user.sent_requests != undefined){
+    //         console.log(user.sent_requests[0].version.id);
+    //         console.log(current);
+    //         getSentRequests(user.sent_requests);
+    //     }
+    // },[user.sent_requests] );
 
 
-
-
-    
     useEffect(() => { 
         getTeam();
     },[teamid] );
@@ -88,7 +93,6 @@ export default function ExeWindow({current}){
         if(team != undefined)
             getPermissions();
     },[team] );    
-    
 
     const getPermissions = () => {
 
@@ -99,11 +103,6 @@ export default function ExeWindow({current}){
             }
         }
     }
-
-
-
-
-
     
     useEffect(() => {
         getFlow();
@@ -135,13 +134,29 @@ export default function ExeWindow({current}){
         setServers(temp);
     }
 
+    const execute = async () => {
 
-    
+        var body = {
+            "created_by": cookies.id,
+            "flow_version": current,
+            "comp_server": selectedServer,
+            "request": null
+        }
 
-   
+        const requestOptions = {
+            method: 'PUT',
+            headers:{
+                'Authorization': 'Token ' + cookies.token,
+                'Content-Type': 'application/json',
+                'accept': 'application/json'
+            },
+            body: JSON.stringify(body)
+        };
 
-   
-
+        const response = await fetch("http://localhost:8000/easy_flow/v1/flow_version_execute/",requestOptions);
+        const data = await response.json();
+        console.log(data);
+    }
 
     const sendReq = async () => {
         var request = {
@@ -151,7 +166,6 @@ export default function ExeWindow({current}){
 	        "from_date" : fromDate,
             "to_date": toDate
         }
-
 
         const requestOptions = {
             method: 'POST',
@@ -167,37 +181,63 @@ export default function ExeWindow({current}){
         const data = await response.json();
     }
 
+    const aprove = async (id) => {
+        var request = {
+            "created_by": cookies.id,
+            "request": id,
+            "approve": true
+        }
+
+        const requestOptions = {
+                method: 'PUT',
+                headers:{
+                    'Authorization': 'Token ' + cookies.token,
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+                body: JSON.stringify(request)
+            };
+
+            const response = await fetch("http://localhost:8000/easy_flow/v1/request_approve/",requestOptions);
+            const data = await response.json();
+
+            console.log(data);
+    
+    }
+
     return(
-        <div>
-            <h1>Execution</h1>
-            <button disabled={!permissions}>Execute</button>
+        <div class="exewindow">
+            <p class="exetitle">Execution</p>
+            <button disabled={!permissions || selectedServer === null} onClick={() => execute()}>Execute</button>
             <button disabled={permissions} onClick={() => sendReq()}>Request</button>
             <div>
-                From: <input type="date" disabled={permissions} value={fromDate} onChange={(e) => setFromDate(e.target.value)}></input>
-                To: <input type="date" disabled={permissions} value={toDate} onChange={(e) => setToDate(e.target.value)}></input>
+                <p>From: <input type="date" disabled={permissions} value={fromDate} onChange={(e) => setFromDate(e.target.value)}></input> </p>
+                <p>To: <input type="date" disabled={permissions} value={toDate} onChange={(e) => setToDate(e.target.value)}></input> </p>
             </div>
-            {/* <select id="servers" value={servers} onChange={e => setServers(e.currentTarget.value)}>
-                {servers?.map(server => (
-                <option key={server.id} value={server.id}>{server.env_path}</option>
-                ))}
-            </select> */}
-            <div>
+            <div class="compservers">
+                <p>Computational servers:</p>
                 {servers?.map(server => (
                     <div className = "radio">
-                        <input
+                        <p><input
                             type="radio" 
                             value={server.id} 
                             checked={selectedServer === server.id}
                             onChange={() => setSelectedServer(server.id)}
                         />
-                        {server.env_path}
+                        {server.remote_host} ({server.env_path})</p>
                     </div>
                 ))}
             </div>
             <div>
-                {requests.map((req,index) => (
+                {sentRequests?.map((req,index) => (
                     <div>
                         Request {index+1} from {req.from_date.substring(0, 10)} to {req.to_date.substring(0, 10)}
+                    </div>
+                ))}
+                {receivedRequests?.map((req,index) => (
+                    <div>
+                        Request {index+1} from {req.from_date.substring(0, 10)} to {req.to_date.substring(0, 10)}
+                        <button onClick={() => aprove(req.id)}>Aprove</button>
                     </div>
                 ))}
             </div>

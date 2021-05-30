@@ -15,11 +15,14 @@
     width: 100%;
     background-color:#282c34;
     color: lightskyblue;
+    /* background-color:#122d42; */
+    /* color: #3e6b89; */
 }
 
 a{
     text-decoration: none;
     color: lightslategray;
+    cursor: pointer;
 }
 
 

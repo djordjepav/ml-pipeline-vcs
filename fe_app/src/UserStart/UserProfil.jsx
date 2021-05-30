@@ -23,7 +23,12 @@ export default function UserProfil({user}){
     return (
         <div className="contentBody" id="Info">
             <table className="InfoTable">
-                <h2>Profile info</h2>
+                <thead>
+                    <tr>
+                        <th><h2>Profile info</h2></th>
+                    </tr>
+                </thead>
+                <tbody>
                     <tr>
                         <th>
                             Username:
@@ -56,6 +61,7 @@ export default function UserProfil({user}){
                             {user?.last_name}
                         </td>
                     </tr>
+                </tbody>
             </table>
 
         

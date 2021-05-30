@@ -20,28 +20,31 @@ export default function DatasetLoader(props) {
         if (props.creationFlag == true) {
             setUpdate(true);
 
-            let nodes = [...props.nodes];
+            if(props.nodes[props.id].available_params == null) {
+                //mesto za dodavanje parametara
+                
+                let nodes = [...props.nodes];
 
-            nodes[props.id].available_params = ["dataset"];
-            nodes[props.id].params = {
-                "dataset": "mnist"
+                nodes[props.id].available_params = ["dataset"];
+                nodes[props.id].params = {
+                    "dataset": "mnist"
+                }
+
+
+                props.setNodes(nodes);
             }
-
-
-            props.setNodes(nodes);
-
-            //mesto za dodavanje parametara
+            
         }
 
     }, []);
 
 
     useEffect(() => {
-        if (props.creationFlag == false) {
+        //if (props.creationFlag == false) {
             setDataset(props.nodes[props.id]?.params["dataset"]);
             setInput(props.nodes[props.id].input_keys);
             setOutput(props.nodes[props.id]?.output_keys);
-        }
+        //}
     }, [props.nodes]);
 
 
@@ -58,6 +61,13 @@ export default function DatasetLoader(props) {
 
             props.setUpdateFlag(1);
         }
+    }
+
+    const deleteNode = () => {
+        let nodes = [...props.nodes];
+        nodes.splice(props.id,1);
+        props.setNodes(nodes);
+        console.log(nodes);
     }
 
     const addInput = () => {
@@ -155,8 +165,12 @@ export default function DatasetLoader(props) {
     return (
         <div className="node">
             {details == 0 && <br />}
-            <span onClick={() => setDetails(!details)}><b>DatasetLoader</b></span>
-
+            <span onClick={() => setDetails(!details)}>
+                <b>DatasetLoader </b>
+                {props.creationFlag &&
+                    <button onClick={() => deleteNode()}>-
+                    </button>}
+            </span>
             {details == 1 &&
                 <div>
                     <hr></hr>

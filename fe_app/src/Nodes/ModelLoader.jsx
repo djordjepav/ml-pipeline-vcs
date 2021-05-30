@@ -10,11 +10,12 @@ export default function ModelLoader(props) {
     const [loss, setLoss] = useState();
     const [metrics, setMetrics] = useState();
     const [optimizer, setOprimizer] = useState();
-    const [compile, setCompile] = useState();
-    const [train, setTrain] = useState();
+    const [compile, setCompile] = useState(false);
+    const [train, setTrain] = useState(false);
     const [epochs, setEpochs] = useState();
     const [batchSize, setBatchSize] = useState();
-    const [publish, setPublish] = useState();
+    const [publish, setPublish] = useState(false);
+    const [validate, setValidate] = useState(false);
 
     const [input, setInput] = useState([]);
     const [output, setOutput] = useState([]);
@@ -25,45 +26,48 @@ export default function ModelLoader(props) {
         if (props.creationFlag == true) {
             setUpdate(true);
 
-            //mesto za dodavanje parametara
+            if(props.nodes[props.id].available_params == null) {
 
-            let nodes = [...props.nodes];
+                //mesto za dodavanje parametara
 
-            nodes[props.id].available_params = ["path","loss","metrics","optimizer","compile","train","epochs","batchSize","publish"];
-            nodes[props.id].params = {
-                "path": null,
-                "loss": null,
-                "metrics": null,
-                "optimizer": null,
-                "compile": null,
-                "train": null,
-                "epochs": null,
-                "batchSize": null,
-                "publish": null
+                let nodes = [...props.nodes];
+
+                nodes[props.id].available_params = ["model_path","loss","metrics","optimizer","compile","train","validate","epochs","batch_size","publish"];
+                nodes[props.id].params = {
+                    "model_path": null,
+                    "loss": null,
+                    "metrics": null,
+                    "optimizer": null,
+                    "compile": false,
+                    "train": false,
+                    "validate": false,
+                    "epochs": null,
+                    "batch_size": null,
+                    "publish": props.teamid,
+                }
+
+                props.setNodes(nodes);
             }
-
-
-            props.setNodes(nodes);
         }
 
     }, []);
 
 
     useEffect(() => {
-        if (props.creationFlag == false) {
+        //if (props.creationFlag == false) {
             setPath(props.nodes[props.id].params["model_path"]);
             setLoss(props.nodes[props.id].params["loss"]);
             setMetrics(props.nodes[props.id].params["metrics"]);
             setOprimizer(props.nodes[props.id].params["optimizer"]);
             setCompile(props.nodes[props.id].params["compile"] ? 1 : 0);
             setTrain(props.nodes[props.id].params["train"] ? 1 : 0);
+            setValidate(props.nodes[props.id].params["validate"] ? 1 : 0);
             setEpochs(props.nodes[props.id].params["epochs"]);
             setBatchSize(props.nodes[props.id].params["batch_size"]);
-            setPublish(props.nodes[props.id].params["publish"] ? 1 : 0);
 
             setInput(props.nodes[props.id].input_keys);
             setOutput(props.nodes[props.id].output_keys);
-        }
+        //}
 
         //console.log(data);
     }, [props.node]);
@@ -80,7 +84,7 @@ export default function ModelLoader(props) {
             let nodes = [...props.nodes];
 
             nodes[props.id].input_keys = input;
-            nodes[props.id].input_keys = output;
+            nodes[props.id].output_keys = output;
 
             nodes[props.id].params["model_path"] = path;
             nodes[props.id].params["loss"] = loss;
@@ -92,9 +96,18 @@ export default function ModelLoader(props) {
             nodes[props.id].params["batch_size"] = batchSize;
             nodes[props.id].params["publish"] = publish;
 
+            console.log(nodes);
+
             props.setNodes(nodes);
             props.setUpdateFlag(1);
         }
+    }
+
+    const deleteNode = () => {
+        let nodes = [...props.nodes];
+        nodes.splice(props.id,1);
+        props.setNodes(nodes);
+        console.log(nodes);
     }
 
     const addInput = () => {
@@ -258,19 +271,19 @@ export default function ModelLoader(props) {
 
         if(props.creationFlag){
             let nodes = [...props.nodes];
-            nodes[props.id].params["batchSize"] = parseInt(e.target.value);
+            nodes[props.id].params["batch_size"] = parseInt(e.target.value);
             props.setNodes(nodes);
         }
     }
 
-    const changePublish = (e) => {
+    const changeValidate = (e) => {
 
-        let oldPublish = !publish;
-        setPublish(oldPublish)
+        let newValidate = !validate;
+        setValidate(newValidate);
 
         if(props.creationFlag){
             let nodes = [...props.nodes];
-            nodes[props.id].params["publish"] = oldPublish;
+            nodes[props.id].params["validate"] = newValidate;
             props.setNodes(nodes);
         }
     }
@@ -278,7 +291,12 @@ export default function ModelLoader(props) {
     return (
         <div className="node">
             {details == 0 && <br />}
-            <span onClick={() => setDetails(!details)}><b>ModelLoader</b></span>
+            <span onClick={() => setDetails(!details)}>
+                <b>ModelLoader </b>
+                {props.creationFlag &&
+                    <button onClick={() => deleteNode()}>-
+                    </button>}
+            </span>
             {details == 1 &&
                 <div>
                     <hr></hr>
@@ -386,6 +404,12 @@ export default function ModelLoader(props) {
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th> Validate: </th>
+                                    <td>
+                                        <input type="checkbox" value={validate} checked={validate} onChange={() => changeValidate()} />
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th> Epochs: </th>
                                     <td>
                                         <input className="inputNode" type="number" value={epochs} onChange={(e) => changeEpochs(e)} />
@@ -395,12 +419,6 @@ export default function ModelLoader(props) {
                                     <th> Batch size: </th>
                                     <td>
                                         <input className="inputNode" type="number" value={batchSize} onChange={(e) => changeBatchSize(e)} />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th> Publish: </th>
-                                    <td>
-                                        <input type="checkbox" value={publish} checked={publish} onChange={() => changePublish()} />
                                     </td>
                                 </tr>
                             </table>
@@ -493,16 +511,16 @@ export default function ModelLoader(props) {
                                     <td> {train ? 'true' : 'false'} </td>
                                 </tr>
                                 <tr>
+                                    <th> Validate: </th>
+                                    <td> {validate ? 'true' : 'false'} </td>
+                                </tr>
+                                <tr>
                                     <th> Epochs: </th>
                                     <td> {epochs ? epochs : 'null'} </td>
                                 </tr>
                                 <tr>
                                     <th> Batch size: </th>
                                     <td> {batchSize ? batchSize : 'null'} </td>
-                                </tr>
-                                <tr>
-                                    <th> Publish: </th>
-                                    <td> {publish ? 'true' : 'false'} </td>
                                 </tr>
                             </table>
                         </>

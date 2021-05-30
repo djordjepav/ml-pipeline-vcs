@@ -14,17 +14,25 @@ export default function DataStandardizer(props){
         if (props.creationFlag == true) {
             setUpdate(true);
 
-            //mesto za dodavanje parametara, ovde ih nema
+            if(props.nodes[props.id].available_params == null) {
+                //mesto za dodavanje parametara
+
+                let nodes = [...props.nodes];
+
+                nodes[props.id].available_params = [];
+                
+                props.setNodes(nodes);
+            }
         }
 
     }, []);
     
 
     useEffect(() =>{
-        if (props.creationFlag == false) {
+        //if (props.creationFlag == false) {
             setInput(props.nodes[props.id].input_keys);
             setOutput(props.nodes[props.id]?.output_keys);
-        }
+        //}
     },[props.nodes]);
 
 
@@ -43,6 +51,12 @@ export default function DataStandardizer(props){
         }
     }
 
+    const deleteNode = () => {
+        let nodes = [...props.nodes];
+        nodes.splice(props.id,1);
+        props.setNodes(nodes);
+        console.log(nodes);
+    }
 
     const addInput = () =>
     {
@@ -87,7 +101,12 @@ export default function DataStandardizer(props){
     return(
         <div className="node">
            {details == 0 && <br/>}
-            <span onClick={() => setDetails(!details)}><b>DataStandardizer</b></span>
+            <span onClick={() => setDetails(!details)}>
+                <b>DataStandardizer </b>
+                {props.creationFlag &&
+                    <button onClick={() => deleteNode()}>-
+                    </button>}
+            </span>
                 {details == 1 &&
                 <div>
                     <hr></hr>
@@ -117,7 +136,7 @@ export default function DataStandardizer(props){
                                             <tbody key={index}>
                                                 <tr>
                                                     <td>
-                                                        <input className="inputNode" type="text" value={item} onChange={(e) => changeInput(index, e)} />
+                                                        <input className="inputNode" type="number" value={item} onChange={(e) => changeInput(index, e)} />
                                                         <button onClick={() => removeInput(index)}>-</button>
                                                     </td>
                                                 </tr>

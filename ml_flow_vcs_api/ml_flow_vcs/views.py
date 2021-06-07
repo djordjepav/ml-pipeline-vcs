@@ -178,11 +178,16 @@ class FlowCreate(generics.ListCreateAPIView):
             filename = '{0}_{1}.json'.format(json_flow['flow_name'], json_flow['flow_version'])
             filename = os.path.join(fs_mount_point, filename)
 
-            with open(filename, 'w') as f:
-                json.dump(json_flow, f, indent=4, sort_keys=True)
-
             flow = models.Flow(name=json_flow['flow_name'], team=team)
             flow.save()
+
+            for node in json_flow['nodes']:
+                if node['type'] == 'model_loader':
+                    node['params']['publish'] = 'flow{0}'.format(flow.id)
+                    continue
+
+            with open(filename, 'w') as f:
+                json.dump(json_flow, f, indent=4, sort_keys=True)
 
             flow_version = models.FlowVersion(version=json_flow['flow_version'],
                                               path=filename,
@@ -281,6 +286,11 @@ class FlowVersionCreate(generics.ListCreateAPIView):
             filename = '{0}_{1}.json'.format(json_flow['flow_name'], json_flow['flow_version'])
             filename = os.path.join(fs_mount_point, filename)
 
+            for node in json_flow['nodes']:
+                if node['type'] == 'model_loader':
+                    node['params']['publish'] = 'flow{0}'.format(prev_flow_version.flow.id)
+                    continue
+
             with open(filename, 'w') as f:
                 json.dump(json_flow, f, indent=4, sort_keys=True)
 
@@ -315,6 +325,11 @@ class FlowVersionUpdate(generics.UpdateAPIView):
         if created_by == flow_version.created_by:
             filename = '{0}_{1}.json'.format(json_flow['flow_name'], json_flow['flow_version'])
             filename = os.path.join(fs_mount_point, filename)
+
+            for node in json_flow['nodes']:
+                if node['type'] == 'model_loader':
+                    node['params']['publish'] = 'flow{0}'.format(flow_version.flow.id)
+                    continue
 
             with open(filename, 'w') as f:
                 json.dump(json_flow, f, indent=4, sort_keys=True)

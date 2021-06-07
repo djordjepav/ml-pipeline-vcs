@@ -44,7 +44,7 @@ export default function ExeWindow({current}){
         setSentRequests([]);
         setReceivedRequests([]);
 
-        console.log(data);
+        //console.log(data);
 
         for(let i=0;i<data.sent_requests.length;i++){
             let req = data.sent_requests[i];

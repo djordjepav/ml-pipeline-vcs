@@ -20,8 +20,6 @@ export default function ModelLoader(props) {
     const [input, setInput] = useState([]);
     const [output, setOutput] = useState([]);
 
-
-
     useEffect(() => {
         if (props.creationFlag == true) {
             setUpdate(true);
@@ -43,7 +41,7 @@ export default function ModelLoader(props) {
                     "validate": false,
                     "epochs": null,
                     "batch_size": null,
-                    "publish": props.teamid,
+                    "publish": props.teamid
                 }
 
                 props.setNodes(nodes);
@@ -54,6 +52,7 @@ export default function ModelLoader(props) {
 
 
     useEffect(() => {
+        console.log("Usa sam u loader");
         //if (props.creationFlag == false) {
             setPath(props.nodes[props.id].params["model_path"]);
             setLoss(props.nodes[props.id].params["loss"]);
@@ -70,9 +69,7 @@ export default function ModelLoader(props) {
         //}
 
         //console.log(data);
-    }, [props.node]);
-
-
+    }, [props.nodes]);
 
 
     const onChange = () => {
@@ -190,7 +187,6 @@ export default function ModelLoader(props) {
             props.setNodes(nodes);
         }
     }
-
     const changePath = (e) => {
         setPath(e.target.value);
 

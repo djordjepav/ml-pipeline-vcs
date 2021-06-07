@@ -45,6 +45,7 @@ export default function SingUp() {
         if(response.ok)
         {
             setCookies("token",data.token);
+            setCookies("username",data.user.username);
             setCookies("id",data.user.id);
             console.log("OK");
             console.log(data);

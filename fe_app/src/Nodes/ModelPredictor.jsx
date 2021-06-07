@@ -148,7 +148,7 @@ export default function ModelPredictor(props) {
 
         if (props.creationFlag) {
             let nodes = [...props.nodes];
-            nodes[props.id].params["index"] = e.target.value;
+            nodes[props.id].params["index"] = parseInt(e.target.value);
             props.setNodes(nodes);
         }
     }

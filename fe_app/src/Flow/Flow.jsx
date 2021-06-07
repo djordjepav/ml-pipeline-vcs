@@ -16,6 +16,7 @@ import ModelEvaluator from '../Nodes/ModelEvaluator';
 import DataStandardizer from '../Nodes/DataStandardizer';
 import ModelPredictor from '../Nodes/ModelPredictor';
 import ExeWindow from './ExeWindow';
+import Chat from './../Chat/Chat';
 
 
 export default function Flow(){
@@ -186,7 +187,7 @@ export default function Flow(){
                                 <ModelLoader teamid={teamid} nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
                                 
                                 {node.type == "model_predictor" &&
-                                <ModelPredictor nodes={flowJson.nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
+                                <ModelPredictor nodes={nodes} setNodes={setNodes} setUpdateFlag={setUpdateFlag} creationFlag={false} id={index}/>}
 
                             </p>
                         ))}
@@ -199,7 +200,8 @@ export default function Flow(){
                 </div>
             </div>
             <div className="exewind">
-                <ExeWindow key={current} current={current}></ExeWindow>
+                {/* <ExeWindow key={current} current={current}></ExeWindow> */}
+                <Chat></Chat>
             </div>
         </div>
     )

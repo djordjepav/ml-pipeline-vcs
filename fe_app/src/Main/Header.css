@@ -3,6 +3,7 @@ header {
     background-color: #01579b;
     border: 0%;
     display: flex;
+    min-width: 100%;
 }
 
 header ul {

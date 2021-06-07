@@ -40,6 +40,7 @@ export default function DatasetLoader(props) {
 
 
     useEffect(() => {
+        console.log("Uso sam u dataset loader");
         //if (props.creationFlag == false) {
             setDataset(props.nodes[props.id]?.params["dataset"]);
             setInput(props.nodes[props.id].input_keys);

@@ -6,3 +6,7 @@
   align-items: center;
   /*justify-content: center;
 }*/
+
+.App{
+  height: 100%;
+}

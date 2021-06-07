@@ -1,0 +1,49 @@
+.chatWindow{
+    width: 400px;
+    height: 500px;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid gray;
+    background-color: #282c34;
+}
+
+.chatters{
+    width: 25%;
+    height: 100%;
+    border-right: 1px solid gray;
+}
+
+.chat{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 75%;
+    height: 100%;
+}
+.header{
+    display: flex;
+    flex-direction: column;
+    background-color: #282c34;
+}
+
+.chatFont{
+    color: white;
+}
+
+.joinButton{
+    color: white;
+    background-color: gray;
+}
+
+.messageInputBox{
+}
+
+.messageInput{
+    height: 30px;
+    width: 70%;
+}
+
+.messageSendButton{
+    height: 35px;
+    width: 27%;
+}

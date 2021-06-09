@@ -3,6 +3,8 @@ import './Flow.css';
 import { useCookies } from 'react-cookie';
 import { useParams } from 'react-router-dom';
 
+import io from "socket.io-client";
+
 export default function ExeWindow({current}){
 
     const {teamid} = useParams();
@@ -21,12 +23,27 @@ export default function ExeWindow({current}){
 
     const [selectedServer, setSelectedServer] = useState(null);
     const [fromDate, setFromDate] = useState(undefined);
-    const [toDate, setToDate] = useState(undefined)
+    const [toDate, setToDate] = useState(undefined);
+
+    const [socket, setSocket] = useState(null);
+    const [log,setLog] = useState([])
 
 
     useEffect(() => {
+
+        const socket = io("http://localhost:8080");
+        setSocket(socket);
+
         getUser();
     },[]);
+
+    useEffect(() => {
+        if (socket != null) {
+            socket.on('log',data=>{
+                setLog(log => [...log,data]);
+            });
+        }
+    }, [socket])
    
     const getUser = async () =>
     {
@@ -228,7 +245,8 @@ export default function ExeWindow({current}){
                     </div>
                 ))}
             </div>
-            <div>
+
+            <div className="requests">
                 {sentRequests?.map((req,index) => (
                     <div>
                         Request {index+1} from {req.from_date.substring(0, 10)} to {req.to_date.substring(0, 10)}
@@ -240,6 +258,10 @@ export default function ExeWindow({current}){
                         <button onClick={() => aprove(req.id)}>Aprove</button>
                     </div>
                 ))}
+            </div>
+
+            <div>
+                <textarea value={log} readOnly={true}></textarea>
             </div>
         </div>
             

@@ -28,10 +28,37 @@ var redis = require('redis');
 var client = '';
 client = redis.createClient('redis://127.0.0.1:6379');
 
-// // Redis Client Ready
+const subscriber = redis.createClient('redis://127.0.0.1:6379');
+const publisher = redis.createClient('redis://127.0.0.1:6379');
+
+publisher.publish("flow14", "a message");
+
+subscriber.on("message",function(channel,message) {
+    console.log(channel);
+    console.log("on" + message);
+    io.emit('log', message);
+})
+
+subscriber.subscribe("flow_flow14", (error,message) => {
+    if(error){
+        console.log(error);
+    }
+    else {
+        console.log("sub on channel " + message);
+    }
+});
+
+
+
+// client.on("message",(channel,message) => {
+//     console.log("Received data :"+message);
+// })
+
+// Redis Client Ready
 // client.once('ready', function () {
-//     // Flush Redis DB
-//     // client.flushdb();
+//     client.on("message",(channel,message) => {
+//         console.log("Received data :"+message);
+//     })
 // });
 
 var port = process.env.PORT || 8080;
@@ -55,43 +82,31 @@ app.post('/join', cors(corsOptions), function (req, res) {
 
     var flowId = req.body.flowId;
     var username = req.body.username;
-    var room = undefined;
 
-    room = chat_rooms.find(room => room.id === flowId);
+    var chetters_key = "flow" + flowId + "_chatters";
+    var room_chatters = [];
 
-    if (room === undefined) {
-        room = {
-            id: flowId,
-            chatters: [username],
-            chat_messages: []
+   
+
+
+    client.get(chetters_key, function (err, reply) {
+        if (reply) {
+            room_chatters = JSON.parse(reply);;
         }
-        chat_rooms.push(room);
 
-        var key = "flow" + flowId + "_chatters";
-        client.set(key, JSON.stringify(room.chatters));
-
-        res.send({
-            'room': room,
-            'status': 'OK'
-        })
-
-    } else {
-        if (room.chatters.indexOf(username) === -1) {
-            room.chatters.push(username);
-
-            var key = "flow" + flowId + "_chatters";
-            client.set(key, JSON.stringify(room.chatters));
-            res.send({
-                'room': room,
-                'status': 'OK'
-            })
-        } else {
+        if(room_chatters.find(chatter => chatter === username)) {
             res.send({
                 'status': 'FAILED'
             });
-
         }
-    }
+        else {
+            room_chatters.push(username);
+            client.set(chetters_key, JSON.stringify(room_chatters));
+            res.send({
+                'status': 'OK'
+            });
+        }
+    });
 });
 
 // API - Leave Chat
@@ -99,17 +114,29 @@ app.post('/leave', function (req, res) {
 
     var flowId = req.body.flowId;
     var username = req.body.username;
-    var room = undefined;
 
-    room = chat_rooms.find(room => room.id === flowId);
+    var chetters_key = "flow" + flowId + "_chatters";
+    var room_chatters = [];
 
-    room.chatters.splice(room.chatters.indexOf(username),1);
 
-    var key = "flow" + flowId + "_chatters";
+    client.get(chetters_key, function (err, reply) {
+        if (reply) {
+            room_chatters = JSON.parse(reply);
+        }
 
-    client.set(key, JSON.stringify(chatters));
-    res.send({
-        'status': 'OK'
+        if(room_chatters.find(chatter => chatter === username)) {
+
+            room_chatters.splice(room_chatters.indexOf(username),1);
+            client.set(chetters_key, JSON.stringify(room_chatters));
+            res.send({
+                'status': 'OK'
+            });
+        }
+        else {
+            res.send({
+                'status': 'FAILED'
+            });
+        }
     });
 });
 
@@ -118,39 +145,83 @@ app.post('/send_message', function (req, res) {
     var username = req.body.username;
     var message = req.body.message;
     var flowId = req.body.flowId;
-    var room = undefined;
 
-    room = chat_rooms.find(room => room.id === flowId);
+    
+    var chetters_key = "flow" + flowId + "_chatters";
+    var room_chatters = [];
 
-    if (room == undefined) {
-        res.send({
-            'status': 'FAILED'
-        })
-    }
-    else {
-        if (room.chatters.indexOf(username) === -1) {
+    var messages_key = "flow" + flowId + "_chat_messages";
+    var room_messages = [];
+
+    client.get(chetters_key, function (err, reply) {
+        if (reply) {
+            room_chatters = JSON.parse(reply);
+        }
+
+        if(room_chatters.find(chatter => chatter === username)) {
+
+            client.get(messages_key, function(err,reply) {
+                if(reply) {
+                    room_messages = JSON.parse(reply);
+                }
+
+                room_messages.push({
+                    'sender': username,
+                    'message': message
+                })
+
+                client.set(messages_key, JSON.stringify(room_messages));
+                res.send({
+                    'message': {
+                        'sender': username,
+                        'message': message,
+                    },
+                    'status': 'OK'
+                });
+            })
+        }
+        else {
             res.send({
                 'status': 'FAILED'
             });
         }
-        else {
-            room.chat_messages.push({
-                'sender': username,
-                'message': message
-            });
+    });
 
-            var key = "flow" + flowId + "_chat_messages";
-            client.set(key, JSON.stringify(room.chat_messages));
 
-            res.send({
-                'message': {
-                    'sender': username,
-                    'message': message,
-                },
-                'status': 'OK'
-            });
-        }
-    }
+
+    // var room = undefined;
+
+    // room = chat_rooms.find(room => room.id === flowId);
+
+    // if (room == undefined) {
+    //     res.send({
+    //         'status': 'FAILED'
+    //     })
+    // }
+    // else {
+    //     if (room.chatters.indexOf(username) === -1) {
+    //         res.send({
+    //             'status': 'FAILED'
+    //         });
+    //     }
+    //     else {
+    //         room.chat_messages.push({
+    //             'sender': username,
+    //             'message': message
+    //         });
+
+    //         var key = "flow" + flowId + "_chat_messages";
+    //         client.set(key, JSON.stringify(room.chat_messages));
+
+    //         res.send({
+    //             'message': {
+    //                 'sender': username,
+    //                 'message': message,
+    //             },
+    //             'status': 'OK'
+    //         });
+    //     }
+    // }
 });
 
 // API - Get Messages
@@ -163,9 +234,7 @@ app.get('/get_messages', function (req, res) {
    
     client.get(key, function (err, reply) {
         if (reply) {
-           
             chat_messages = JSON.parse(reply);
-            console.log(chat_messages);
             res.send(chat_messages);
         }
     })
@@ -182,7 +251,6 @@ app.get('/get_chatters', cors(corsOptions), function (req, res) {
     client.get(key, function (err, reply) {
         if (reply) {
             chatters = JSON.parse(reply);
-            //console.log(chatters);
             res.send(chatters);
         }
     });

@@ -76,7 +76,7 @@ export default function SingUp() {
                 <br /><br />
                 Lastname: <input className="inputSignup" type="text" value={lastname} onChange={updateLastname} />
                 <br /><br />
-                Password: <input className="inputSignup" type="text" value={password} onChange={updatePassword} />
+                Password: <input className="inputSignup" type="password" value={password} onChange={updatePassword} />
                 <br /><br />
                 <button type="submit" id="buttonSingup">SignUp</button>
             </form>

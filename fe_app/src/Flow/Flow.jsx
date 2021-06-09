@@ -38,6 +38,8 @@ export default function Flow(){
 
     const [test,setTest] = useState("DA");
 
+    const [isExe,setIsExe] = useState(true);
+
 
     useEffect(() => {
         getFlowTree();
@@ -200,8 +202,12 @@ export default function Flow(){
                 </div>
             </div>
             <div className="exewind">
-                {/* <ExeWindow key={current} current={current}></ExeWindow> */}
-                <Chat></Chat>
+                <a onClick={() => setIsExe(true)}>Execution</a>
+                /<a onClick={() => setIsExe(false)}>Chat</a>
+                {isExe == true ?
+                <ExeWindow key={current} current={current}></ExeWindow>
+                :<Chat></Chat>
+                }
             </div>
         </div>
     )

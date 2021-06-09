@@ -1,5 +1,5 @@
 .chatWindow{
-    width: 400px;
+    width: 600px;
     height: 500px;
     display: flex;
     flex-direction: row;
@@ -7,10 +7,15 @@
     background-color: #282c34;
 }
 
-.chatters{
+.chattersdiv{
     width: 25%;
     height: 100%;
     border-right: 1px solid gray;
+    color: white;
+}
+
+.chatters{
+    text-align: left;
 }
 
 .chat{
@@ -20,6 +25,28 @@
     width: 75%;
     height: 100%;
 }
+
+.messages{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    scroll-behavior: smooth;
+    overflow-wrap: break-word;
+    overflow-y: auto;
+    color: white;
+}
+
+.message{
+    background-color: teal;
+    margin:4px;
+    border-radius: 5px;
+    width: 70%;
+}
+
+.myMessage{
+    align-self: flex-end;
+}
+
 .header{
     display: flex;
     flex-direction: column;

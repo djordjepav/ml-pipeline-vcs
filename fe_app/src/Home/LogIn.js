@@ -65,7 +65,7 @@ export default function LogIn() {
             <br/>
             Username: <input className="inputSignup" type="text" value={username} onChange={updateUsername}/>
             <br/><br/>
-            Password: <input className="inputSignup" type="text" value={password} onChange={updatePassword}/>
+            Password: <input className="inputSignup" type="password" value={password} onChange={updatePassword}/>
             <br/><br/>
             <button id="buttonSingup" onClick={LogIn}>LogIn</button>
             <br/><br/>

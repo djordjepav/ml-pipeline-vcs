@@ -43,7 +43,7 @@ export default function FlowCreate(){
             setIsMount(0);
         else {
             if(save==true){
-                //createFlowVersion();
+                createFlowVersion();
                 console.log(flow);
                 setSave(false);
             }

@@ -13,10 +13,12 @@ export default function Chat() {
 
     const [socket, setSocket] = useState(null);
     const [username, setUsername] = useState("");
-    const [message, setMessage] = useState("Poruka");
+    const [message, setMessage] = useState("");
 
     const [chatters, setChatters] = useState([]);
     const [messages, setMessages] = useState([]);
+
+    const [active, setActive] = useState();
 
     useEffect(() => {
 
@@ -28,6 +30,7 @@ export default function Chat() {
         getMessages();
     }, []);
 
+
     useEffect(() => {
         if (socket != null) {
             socket.on('new_chatters', data => {
@@ -36,9 +39,7 @@ export default function Chat() {
 
             socket.on('receive', data => {
                 console.log(data);
-
-                //setMessages(messages => [...messages, data]);
-
+                setMessages(messages => [...messages, data]);
             });
         }
     }, [socket])
@@ -70,10 +71,19 @@ export default function Chat() {
         };
 
         const response = await fetch("http://localhost:8080/get_messages?flowId=" + flowid, requestOptions);
-        console.log(response);
         const data = await response.json();
         console.log(data);
         setMessages(data);
+    }
+
+    const getStatus = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
+        };
+
     }
 
 
@@ -101,6 +111,29 @@ export default function Chat() {
         }
     }
 
+    const leaveRoom = async() => {
+        let bodyData = "username=" + username + "&flowId=" + flowid;
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: bodyData,
+        };
+
+        const response = await fetch("http://localhost:8080/leave", requestOptions);
+        const data = await response.json();
+        console.log(data);
+
+        // if (data.status == "OK") {
+        //     socket.emit('join_chatter', username);
+        // }
+        // else {
+        //     console.log("Join error");
+        // }
+    }
+
     const sendMassage = async () => {
 
         let messageData = "username=" + username + "&message=" + message + "&flowId=" + flowid;
@@ -115,7 +148,6 @@ export default function Chat() {
 
         const response = await fetch("http://localhost:8080/send_message", requestOptions);
         const data = await response.json();
-        console.log(data);
 
         if (data.status == "OK") {
             socket.emit('message', data.message);
@@ -130,28 +162,39 @@ export default function Chat() {
             <div class="header">
                 <p class="chatFont">Chat</p>
                 <button class="joinButton" onClick={joinRoom}>Join chat</button>
+                <button class="joinButton" onClick={leaveRoom}>Leave chat</button>
             </div>
 
             <div className="chatWindow">
-                <div className="chatters">
+                <div className="chattersdiv">
                     <p class="chatFont">Active</p>
                     <hr />
                     {chatters.filter(chatter => chatter != username).map(chatter => (
-                        <div>
-                            {chatter}
+                        <div className="chatters">
+                            <ul>
+                                <li><p>{chatter}</p></li>
+                            </ul>
+                            
                         </div>
                     ))}
                 </div>
                 <div className="chat">
                     <div>
-                    <p class="chatFont">Messages</p>
-                    <hr />
+                        <p class="chatFont">Messages</p>
+                        <hr />
                     </div>
-                    {messages.map(message => (
-                        <div>
-                            {message.sender}: {message.message}
-                        </div>
-                    ))}
+                    <div className="messages">
+                        {messages.map(message => (
+                            <>
+                                {message.sender == username ? 
+                                    <div className="message myMessage"><p>You: {message.message}</p></div>
+                                    :
+                                    <div className="message fromMessage"><p>{message.sender}: {message.message}</p></div>
+                                }
+                                
+                            </>
+                        ))}
+                    </div>
                     <div className="messageInputBox">
                         <input class="messageInput" type="text" value={message}
                             onChange={(e) => setMessage(e.target.value)}>

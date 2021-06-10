@@ -67,6 +67,7 @@ button{
     padding: 0;
     border: none;
     background-color: #282c34;
+    color: gray;
 }
 
 .info{

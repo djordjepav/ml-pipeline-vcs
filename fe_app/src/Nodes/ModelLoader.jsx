@@ -52,7 +52,6 @@ export default function ModelLoader(props) {
 
 
     useEffect(() => {
-        console.log("Usa sam u loader");
         //if (props.creationFlag == false) {
             setPath(props.nodes[props.id].params["model_path"]);
             setLoss(props.nodes[props.id].params["loss"]);

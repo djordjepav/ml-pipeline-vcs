@@ -29,9 +29,6 @@ var client = '';
 client = redis.createClient('redis://127.0.0.1:6379');
 
 const subscriber = redis.createClient('redis://127.0.0.1:6379');
-const publisher = redis.createClient('redis://127.0.0.1:6379');
-
-publisher.publish("flow14", "a message");
 
 subscriber.on("message",function(channel,message) {
     console.log(channel);
@@ -39,27 +36,6 @@ subscriber.on("message",function(channel,message) {
     io.emit('log', message);
 })
 
-subscriber.subscribe("flow_flow14", (error,message) => {
-    if(error){
-        console.log(error);
-    }
-    else {
-        console.log("sub on channel " + message);
-    }
-});
-
-
-
-// client.on("message",(channel,message) => {
-//     console.log("Received data :"+message);
-// })
-
-// Redis Client Ready
-// client.once('ready', function () {
-//     client.on("message",(channel,message) => {
-//         console.log("Received data :"+message);
-//     })
-// });
 
 var port = process.env.PORT || 8080;
 
@@ -75,7 +51,27 @@ app.use(bodyParser.urlencoded({
 }));
 
 
-var chat_rooms = [];
+//API - Subscribe to redis channel for log
+app.post('/subscribe', cors(corsOptions), function (req,res ) {
+
+    var flowId = req.body.flowId;
+
+    subscriber.subscribe("flow_flow" + flowId, (error,message) => {
+        if(error){
+            console.log(error);
+            res.send({
+                'status': 'FAILED'
+            });
+        }
+        else {
+            console.log("sub on channel " + message);
+            res.send({
+                'status': 'OK'
+            });
+        }
+    });
+})
+
 
 // API - Join Chat
 app.post('/join', cors(corsOptions), function (req, res) {
@@ -188,40 +184,6 @@ app.post('/send_message', function (req, res) {
     });
 
 
-
-    // var room = undefined;
-
-    // room = chat_rooms.find(room => room.id === flowId);
-
-    // if (room == undefined) {
-    //     res.send({
-    //         'status': 'FAILED'
-    //     })
-    // }
-    // else {
-    //     if (room.chatters.indexOf(username) === -1) {
-    //         res.send({
-    //             'status': 'FAILED'
-    //         });
-    //     }
-    //     else {
-    //         room.chat_messages.push({
-    //             'sender': username,
-    //             'message': message
-    //         });
-
-    //         var key = "flow" + flowId + "_chat_messages";
-    //         client.set(key, JSON.stringify(room.chat_messages));
-
-    //         res.send({
-    //             'message': {
-    //                 'sender': username,
-    //                 'message': message,
-    //             },
-    //             'status': 'OK'
-    //         });
-    //     }
-    // }
 });
 
 // API - Get Messages
@@ -244,18 +206,29 @@ app.get('/get_messages', function (req, res) {
 app.get('/get_chatters', cors(corsOptions), function (req, res) {
 
     var flowId = req.query.flowId;
+    var username = req.query.username;
+
+    console.log(username);
 
     var key = "flow" + flowId + "_chatters";
     var chatters = [];
+    var active = false;
 
     client.get(key, function (err, reply) {
         if (reply) {
             chatters = JSON.parse(reply);
-            res.send(chatters);
+
+            if(chatters.find(chatter => chatter === username))
+                active = true;
+
+            res.send({
+                'chatters': chatters,
+                'active': active,
+                'status': 'OK'
+            });
         }
     });
 });
-
 // Socket Connection
 // UI Stuff
 io.on('connection', function (socket) {
@@ -269,5 +242,13 @@ io.on('connection', function (socket) {
     socket.on('join_chatter', function (data) {
         io.emit('new_chatters', data);
     });
+
+    socket.on('leave_chatter', function(data) {
+        io.emit('delete_chatter', data);
+    })
+
+    socket.on('add_team', function(data) {
+        io.emit('new_team', data);
+    })
 
 });

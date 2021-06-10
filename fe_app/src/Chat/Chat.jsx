@@ -18,27 +18,29 @@ export default function Chat() {
     const [chatters, setChatters] = useState([]);
     const [messages, setMessages] = useState([]);
 
-    const [active, setActive] = useState();
+    const [active, setActive] = useState(false);
 
     useEffect(() => {
 
         const socket = io("http://localhost:8080");
         setSocket(socket);
-
         setUsername(cookies.username);
         getChatters();
         getMessages();
     }, []);
 
-
     useEffect(() => {
         if (socket != null) {
             socket.on('new_chatters', data => {
-                console.log(data);
+                setChatters(chatters => [...chatters, data]);
             });
 
-            socket.on('receive', data => {
+            socket.on('delete_chatter', data => {
                 console.log(data);
+                setChatters(data);
+            })
+
+            socket.on('receive', data => {
                 setMessages(messages => [...messages, data]);
             });
         }
@@ -54,11 +56,17 @@ export default function Chat() {
             }
         };
 
-        const response = await fetch("http://localhost:8080/get_chatters?flowId=" + flowid, requestOptions);
+        const response = await fetch("http://localhost:8080/get_chatters?flowId=" + flowid + "&username=" + cookies.username, requestOptions);
         const data = await response.json();
         console.log(data);
-        setChatters(data);
-        //setCount(data.length);
+
+        if (data.status == "OK") {
+            setChatters(data.chatters);
+            setActive(data.active);
+        }
+        else {
+            console.log("Get chatters error");
+        }
     }
 
     const getMessages = async () => {
@@ -76,15 +84,15 @@ export default function Chat() {
         setMessages(data);
     }
 
-    const getStatus = async () => {
-        const requestOptions = {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            }
-        };
+    // const getStatus = async () => {
+    //     const requestOptions = {
+    //         method: 'GET',
+    //         headers: {
+    //             "Content-Type": "application/x-www-form-urlencoded",
+    //         }
+    //     };
 
-    }
+    // }
 
 
     const joinRoom = async () => {
@@ -104,6 +112,8 @@ export default function Chat() {
         console.log(data);
 
         if (data.status == "OK") {
+            setActive(1);
+
             socket.emit('join_chatter', username);
         }
         else {
@@ -111,7 +121,7 @@ export default function Chat() {
         }
     }
 
-    const leaveRoom = async() => {
+    const leaveRoom = async () => {
         let bodyData = "username=" + username + "&flowId=" + flowid;
 
         const requestOptions = {
@@ -126,12 +136,19 @@ export default function Chat() {
         const data = await response.json();
         console.log(data);
 
-        // if (data.status == "OK") {
-        //     socket.emit('join_chatter', username);
-        // }
-        // else {
-        //     console.log("Join error");
-        // }
+        if (data.status == "OK") {
+
+            setActive(0);
+
+            var c = chatters;
+            console.log(c);
+            console.log(c.indexOf(username));
+            c.splice(c.indexOf(username), 1);
+            socket.emit('leave_chatter', c);
+        }
+        else {
+            console.log("Join error");
+        }
     }
 
     const sendMassage = async () => {
@@ -161,47 +178,67 @@ export default function Chat() {
         <div>
             <div class="header">
                 <p class="chatFont">Chat</p>
-                <button class="joinButton" onClick={joinRoom}>Join chat</button>
-                <button class="joinButton" onClick={leaveRoom}>Leave chat</button>
+                {active == false ?
+                    <button class="joinButton" onClick={joinRoom}>Join chat</button>
+                    : <button class="joinButton" onClick={leaveRoom}>Leave chat</button>
+                }
             </div>
 
             <div className="chatWindow">
                 <div className="chattersdiv">
                     <p class="chatFont">Active</p>
                     <hr />
-                    {chatters.filter(chatter => chatter != username).map(chatter => (
-                        <div className="chatters">
-                            <ul>
-                                <li><p>{chatter}</p></li>
-                            </ul>
-                            
+                    {active == true ?
+                        <>
+                            {chatters.filter(chatter => chatter != username).map(chatter => (
+                                <div className="chatters">
+                                    <ul>
+                                        <li><p>{chatter}</p></li>
+                                    </ul>
+
+                                </div>
+                            ))}
+                        </>
+                        :
+                        <div>
+                            <p>Join chat to see active users</p>
                         </div>
-                    ))}
+                    }
                 </div>
-                <div className="chat">
-                    <div>
-                        <p class="chatFont">Messages</p>
-                        <hr />
+                {active == true ?
+                    <div className="chat">
+                        <div>
+                            <p class="chatFont">Messages</p>
+                            <hr />
+                        </div>
+                        <div className="messages">
+                            {messages.map(message => (
+                                <>
+                                    {message.sender == username ?
+                                        <div className="message myMessage"><p>You: {message.message}</p></div>
+                                        :
+                                        <div className="message fromMessage"><p>{message.sender}: {message.message}</p></div>
+                                    }
+
+                                </>
+                            ))}
+                        </div>
+                        <div className="messageInputBox">
+                            <input class="messageInput" type="text" value={message}
+                                onChange={(e) => setMessage(e.target.value)}>
+                            </input>
+                            <button class="messageSendButton" onClick={sendMassage}>Send</button>
+                        </div>
                     </div>
-                    <div className="messages">
-                        {messages.map(message => (
-                            <>
-                                {message.sender == username ? 
-                                    <div className="message myMessage"><p>You: {message.message}</p></div>
-                                    :
-                                    <div className="message fromMessage"><p>{message.sender}: {message.message}</p></div>
-                                }
-                                
-                            </>
-                        ))}
+                    :
+                    <div className="emptyChat">
+                        <div>
+                            <p class="chatFont">Messages</p>
+                            <hr />
+                        </div>
+                        <p>Join chat to see messages</p>
                     </div>
-                    <div className="messageInputBox">
-                        <input class="messageInput" type="text" value={message}
-                            onChange={(e) => setMessage(e.target.value)}>
-                        </input>
-                        <button class="messageSendButton" onClick={sendMassage}>Send</button>
-                    </div>
-                </div>
+                }
 
             </div>
 

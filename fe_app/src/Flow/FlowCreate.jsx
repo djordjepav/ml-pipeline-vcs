@@ -11,6 +11,10 @@ import ModelEvaluator from '../Nodes/ModelEvaluator';
 import DataStandardizer from '../Nodes/DataStandardizer';
 import ModelPredictor from '../Nodes/ModelPredictor';
 
+import { useToasts } from 'react-toast-notifications';
+import {useHistory} from "react-router-dom";
+import io from "socket.io-client";
+
 
 export default function FlowCreate(){
 
@@ -23,6 +27,10 @@ export default function FlowCreate(){
     const [nodes, setNodes] = useState([]);
     const [isMount, setIsMount] = useState(1);
     const [save, setSave] = useState(false);
+
+    const { addToast } = useToasts();
+    const history = useHistory();
+    const [socket, setSocket] = useState(null);
 
     //const [nodeComponents, setNodeComponents] = useState();
     //const [nodesCount, setNodesCount] = useState(0);
@@ -39,8 +47,11 @@ export default function FlowCreate(){
 
         
     useEffect(() => {
-        if(isMount)
+        if(isMount){
+            const socket = io("http://localhost:8080");
+            setSocket(socket);
             setIsMount(0);
+        }
         else {
             if(save==true){
                 createFlowVersion();
@@ -49,7 +60,6 @@ export default function FlowCreate(){
             }
         }
     },[flow] );
-
 
     // useEffect(() => {
     //     console.log(nodes)
@@ -71,6 +81,18 @@ export default function FlowCreate(){
         const response = await fetch("http://localhost:8000/easy_flow/v1/flow_create/",requestOptions);
         const data = await response.json();
         console.log(data);
+
+        if(response.ok) {
+            addToast("Flow created", {
+                appearance: 'success',
+                autoDismiss: true,
+            });
+
+            socket.emit('add_team', data);
+
+            history.push("/flow/"+ data.team + "/" + data.id + "/" + data.name + "/" + data.root.id);
+        }
+
     }
 
     const handleSave = () => {

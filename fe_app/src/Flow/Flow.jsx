@@ -40,6 +40,8 @@ export default function Flow(){
 
     const [isExe,setIsExe] = useState(true);
 
+    const [log,setLog] = useState([]);
+
 
     useEffect(() => {
         getFlowTree();
@@ -205,7 +207,10 @@ export default function Flow(){
                 <a onClick={() => setIsExe(true)}>Execution</a>
                 /<a onClick={() => setIsExe(false)}>Chat</a>
                 {isExe == true ?
-                <ExeWindow key={current} current={current}></ExeWindow>
+                <div>
+                    <ExeWindow key={current} current={current} setLog={setLog} log={log}></ExeWindow>
+                    <textarea value={log} readOnly={true}></textarea>
+                </div>
                 :<Chat></Chat>
                 }
             </div>

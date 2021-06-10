@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import './Flow.css';
 import FlowCreate from './FlowCreate';
 import Flow from './Flow';
+import io from "socket.io-client";
 
 export default function FlowContainer({children}){
 
@@ -15,9 +16,23 @@ export default function FlowContainer({children}){
     const [team,setTeam] = useState([]);
     const [flows,setFlows] = useState([]);
 
+    const [socket, setSocket] = useState(null);
+
     useEffect(() => {
+        const socket = io("http://localhost:8080");
+        setSocket(socket);
         getTeam();
     },[] );
+
+    useEffect(() => {
+        if (socket != null) {
+            socket.on('new_team', data => {
+                console.log(data);
+                setFlows(flows => [...flows,data]);
+            });
+        }
+    }, [socket])
+
 
     const getTeam = async () =>
     {

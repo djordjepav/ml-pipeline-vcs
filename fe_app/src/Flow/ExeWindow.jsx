@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 
 import io from "socket.io-client";
 
-export default function ExeWindow({current}){
+export default function ExeWindow({current,setLog,log}){
 
     const {teamid} = useParams();
     const {flowid} = useParams();
@@ -20,30 +20,59 @@ export default function ExeWindow({current}){
     const [receivedRequests, setReceivedRequests] = useState([]);
 
     const [permissions, setPermissions] = useState(0);
+    const [approved, setApproved] = useState(0);
+    const [reqest, setReqest] = useState(null);
 
     const [selectedServer, setSelectedServer] = useState(null);
     const [fromDate, setFromDate] = useState(undefined);
     const [toDate, setToDate] = useState(undefined);
 
     const [socket, setSocket] = useState(null);
-    const [log,setLog] = useState([])
+    //const [log,setLog] = useState([]);
+
+    const [exeResponse, setExeResponse] = useState("");
 
 
     useEffect(() => {
 
         const socket = io("http://localhost:8080");
         setSocket(socket);
-
+        subscribe();
         getUser();
     },[]);
 
+
+    const subscribe = async () => {
+        let bodyData = "flowId=" + flowid;
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: bodyData,
+        };
+
+        const response = await fetch("http://localhost:8080/subscribe", requestOptions);
+        const data = await response.json();
+
+        if (data.status == "OK") {
+            
+        }
+        else {
+            console.log("Get chatters error");
+        }
+    }
+
     useEffect(() => {
         if (socket != null) {
+                
             socket.on('log',data=>{
                 setLog(log => [...log,data]);
             });
         }
     }, [socket])
+    
    
     const getUser = async () =>
     {
@@ -61,12 +90,23 @@ export default function ExeWindow({current}){
         setSentRequests([]);
         setReceivedRequests([]);
 
-        //console.log(data);
+        // console.log(data);
 
         for(let i=0;i<data.sent_requests.length;i++){
             let req = data.sent_requests[i];
-            if(req.version.id == current)
+            if(req.version.id == current){
+
+                var nowDate = new Date().toJSON().slice(0,10);
+                var reqDate = req.to_date.slice(0,10);
+
+                if( req.approved == true && reqDate >= nowDate) {
+                    setApproved(1);
+                    setPermissions(1);
+                    setReqest(req.id);
+                }
                 setSentRequests(sentRequests => [...sentRequests,req]);
+            }
+                
         }
         for(let i=0;i<data.received_requests.length;i++){
             let req = data.received_requests[i];
@@ -157,7 +197,7 @@ export default function ExeWindow({current}){
             "created_by": cookies.id,
             "flow_version": current,
             "comp_server": selectedServer,
-            "request": null
+            "request": reqest
         }
 
         const requestOptions = {
@@ -170,9 +210,15 @@ export default function ExeWindow({current}){
             body: JSON.stringify(body)
         };
 
+        setExeResponse("Whait for server response");
+
         const response = await fetch("http://localhost:8000/easy_flow/v1/flow_version_execute/",requestOptions);
         const data = await response.json();
         console.log(data);
+
+        if(data.detail = "success"){
+            setExeResponse("Flow executed successfully ");
+        }
     }
 
     const sendReq = async () => {
@@ -247,21 +293,37 @@ export default function ExeWindow({current}){
             </div>
 
             <div className="requests">
-                {sentRequests?.map((req,index) => (
+                {approved == 1 && 
+                    <p>
+                        You can execute flow
+                    </p>
+                }
+                
+                {/* {sentRequests?.map((req,index) => (
                     <div>
-                        Request {index+1} from {req.from_date.substring(0, 10)} to {req.to_date.substring(0, 10)}
+                        <p>Request {index+1} from {req.from_date.substring(0, 10)} to {req.to_date.substring(0, 10)} { }
+                            {req.approve == true ? 
+                                <>
+                                    aprooved
+                                </>
+                                :<>
+                                    not aprooved
+                                </>
+                            }
+                        </p>
                     </div>
-                ))}
+                ))} */}
                 {receivedRequests?.map((req,index) => (
                     <div>
-                        Request {index+1} from {req.from_date.substring(0, 10)} to {req.to_date.substring(0, 10)}
+                        <p>Request {index+1} from {req.from_date.substring(0, 10)} to {req.to_date.substring(0, 10)}</p>
                         <button onClick={() => aprove(req.id)}>Aprove</button>
                     </div>
                 ))}
             </div>
 
             <div>
-                <textarea value={log} readOnly={true}></textarea>
+                <p>{exeResponse}</p>
+                {/* <textarea value={log} readOnly={true}></textarea> */}
             </div>
         </div>
             

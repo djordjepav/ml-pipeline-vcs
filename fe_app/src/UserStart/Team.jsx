@@ -2,6 +2,7 @@ import React, { useEffect,useState } from 'react'
 import { useParams } from "react-router-dom";
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
+import { useToasts } from 'react-toast-notifications'
 
 export default function Team(){
 
@@ -10,6 +11,8 @@ export default function Team(){
     const [team,setTeam] = useState([]);
     const [flows,setFlows] = useState([]);
     const [cookies] = useCookies(['user']);
+
+    const { addToast } = useToasts()
 
 
     const getTeam = async () =>
@@ -57,7 +60,10 @@ export default function Team(){
 
         if(response.ok)
         {
-            console.log("OK");
+            addToast("Member successfully added", {
+                appearance: 'success',
+                autoDismiss: true,
+            });
         }
         else
         {
